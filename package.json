@@ -1,0 +1,31 @@
+{
+  "name": "saigonbynight",
+  "version": "1.0.0",
+  "description": "e-commerse website for covid lockdown season.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "SeemsChill - BaTau - DaiZaDongThap",
+  "license": "MIT",
+  "dependencies": {
+    "@chakra-ui/react": "^1.6.12",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "framer-motion": "^4.1.17",
+    "next": "^12.0.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-next": "^12.0.3",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
+    "prettier": "^2.4.1"
+  }
+}
