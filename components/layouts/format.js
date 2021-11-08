@@ -1,19 +1,32 @@
-import React from "react";
-import { Container } from "@chakra-ui/react";
-import Navbar from "../navbar";
-import Toggle from "../toggle";
+import { motion } from "framer-motion";
+import Head from "next/head";
 
-const Format = ({ children, type }) => {
-  const href = type == "home" ? type : "signin";
-  console.log(href);
-
-  return (
-    <>
-      <Container maxW="container.lg" pt={14}>
-        {children}
-      </Container>
-    </>
-  );
+const variants = {
+  hidden: { opacity: 0, x: 0, y: 20 },
+  enter: { opacity: 1, x: 0, y: 0 },
+  exit: { opacity: 0, x: -0, y: 20 },
 };
 
-export default Format;
+const Layout = ({ children, title }) => (
+  <motion.article
+    initial="hidden"
+    animate="enter"
+    exit="exit"
+    variants={variants}
+    transition={{ duration: 0.4, type: "easeInOut" }}
+    style={{ position: "relative" }}
+  >
+    <>
+      {title && (
+        <Head>
+          <title>{title} - Saigon by night.</title>
+          <meta name="twitter:title" content={title} />
+          <meta property="og:title" content={title} />
+        </Head>
+      )}
+      {children}
+    </>
+  </motion.article>
+);
+
+export default Layout;

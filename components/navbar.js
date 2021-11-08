@@ -13,7 +13,7 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Logo from "./logo.js";
+import Logo from "./motions/logo.js";
 import ThemeToggle from "./theme-toggle";
 import Toggle from "./toggle";
 import { HamburgerIcon } from "@chakra-ui/icons";
