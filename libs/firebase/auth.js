@@ -3,13 +3,14 @@ import auth from "./init";
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   onIdTokenChanged,
   signOut,
   updateProfile,
 } from "firebase/auth";
 import Cookies from "js-cookie";
 import sha256 from "js-sha256";
-import { fetcherCreateUser } from "../engines/fetcher";
+import { fetcherSignUp, fetcherSignIn } from "../engines/fetcher";
 import axios from "axios";
 import useSWR from "swr";
 
@@ -55,7 +56,7 @@ function useProvideAuth() {
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
         }).then(async () => {
-          const res = await fetcherCreateUser("http://localhost:8000/api/post/register/create/user/", username, email, hashedPass); 
+          const res = await fetcherSignUp("http://localhost:8000/api/post/register/user/", username, email, hashedPass); 
           localStorage.setItem("Authorization", res.data.token);
           setSuccess(res.data.success);
           setTimeout(() => {
@@ -64,6 +65,19 @@ function useProvideAuth() {
         }).catch((error) => console.log(error));
       }
     );
+  };
+  
+  const signIn = async (email, password) => {
+    const hashedPass = sha256(password);
+    return signInWithEmailAndPassword(auth, email, hashedPass).then(async (userCredential) => {
+      handleUser(userCredential.user);
+      const res = await fetcherSignIn("http://localhost:8000/api/post/login/", hashedPass);
+      localStorage.setItem("Authorization", res.data.token);
+      setSuccess(res.data.success);
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+    }).catch((error) => console.log(error));
   };
 
   const signout = () => {
@@ -85,6 +99,7 @@ function useProvideAuth() {
     user,
     success,
     classicSignUp,
+    signIn,
     signout,
   };
 }

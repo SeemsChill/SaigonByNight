@@ -4,7 +4,7 @@ import axios from "axios";
 // axios.defaults.xsrfCookieName = "csrftoken";
 // axios.defaults.withCredentials = true;
 
-const fetcherCreateUser = async (url, name, email, password) => {
+const fetcherSignUp = async (url, name, email, password) => {
   const data = await axios.post(`${url}`, {
     username: `${name}`,
     email: `${email}`,
@@ -19,4 +19,16 @@ const fetcherCreateUser = async (url, name, email, password) => {
   return data;
 }
 
-export { fetcherCreateUser};
+const fetcherSignIn = async (url, password) => {
+  const data = await axios.post(`${url}`, {
+    password: `${password}`
+  }, {
+    headers: new Headers({
+      "Content-Type": "application/json"
+    }),
+    credentials: "include"
+  });
+  return data;
+};
+
+export { fetcherSignIn, fetcherSignUp };

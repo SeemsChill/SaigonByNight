@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Container,
@@ -17,8 +19,10 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
 import { useForm } from "react-hook-form";
+import {useAuth} from "@/libs/firebase/auth";
 
 const SignIn = () => {
+  const {success, signIn} = useAuth();
   const {
     handleSubmit,
     register,
@@ -26,7 +30,7 @@ const SignIn = () => {
   } = useForm();
 
   function onSubmit(values) {
-    console.log(values);
+    signIn(values.email, values.password);
   }
 
   return (
@@ -50,7 +54,7 @@ const SignIn = () => {
         >
           <Heading>Sign in</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.email} id="signin-form" mt={4}>
+            <FormControl isInvalid={errors.email || errors.password} id="signin-form" mt={4}>
               <FormLabel htmlFor="email">email: </FormLabel>
               <Input
                 id="email"
@@ -66,6 +70,9 @@ const SignIn = () => {
                   },
                 })}
               />
+              <FormErrorMessage>
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
               <FormLabel mt={4}>password: </FormLabel>
               <Input
                 id="password"
@@ -83,7 +90,7 @@ const SignIn = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.email && errors.email.message}
+                {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
             <Button
