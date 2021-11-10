@@ -8,6 +8,7 @@ import {
   HStack,
   Form,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Text,
@@ -15,8 +16,19 @@ import {
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
+import { useForm } from "react-hook-form";
 
 const SignIn = () => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  function onSubmit(values) {
+    console.log(values);
+  }
+
   return (
     <Layout title="Sign in">
       <Container
@@ -37,15 +49,22 @@ const SignIn = () => {
           borderRadius="10px"
         >
           <Heading>Sign in</Heading>
-          <form>
-            <FormControl id="signin-form" mt={4}>
-              <FormLabel>email: </FormLabel>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={errors.email} id="signin-form" mt={4}>
+              <FormLabel htmlFor="email">email: </FormLabel>
               <Input
                 id="email"
                 placeholder="email"
                 w="90%"
                 transition="all 400ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
+                {...register("email", {
+                  required: "This is required",
+                  minLength: {
+                    value: 4,
+                    message: "Minimum length should be 4.",
+                  },
+                })}
               />
               <FormLabel mt={4}>password: </FormLabel>
               <Input
@@ -55,7 +74,17 @@ const SignIn = () => {
                 w="90%"
                 transition="all 400ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
+                {...register("password", {
+                  required: "This is required",
+                  minLength: {
+                    value: 4,
+                    message: "Minimum length should be 4.",
+                  },
+                })}
               />
+              <FormErrorMessage>
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
             </FormControl>
             <Button
               mt={4}
@@ -98,7 +127,6 @@ const SignIn = () => {
         </Box>
         <Box
           as="div"
-          top="0%"
           transform="translateX(14rem)"
           display={{ base: "none", md: "inline-block" }}
         >

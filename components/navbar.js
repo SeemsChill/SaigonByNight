@@ -2,6 +2,7 @@ import React from "react";
 import NextLink from "next/link";
 import {
   Box,
+  Button,
   Container,
   Flex,
   IconButton,
@@ -17,10 +18,12 @@ import Logo from "./motions/logo.js";
 import ThemeToggle from "./theme-toggle";
 import Toggle from "./toggle";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import { useAuth } from "@/libs/firebase/auth";
 
 const Navbar = ({ router }) => {
   const isHome = router.route === "/" ? true : false;
   const isSignIn = router.route === "/signin" ? true : false;
+  const { user, signout } = useAuth();
 
   return (
     <Box
@@ -90,12 +93,20 @@ const Navbar = ({ router }) => {
                 Sign up
               </Toggle>
             ) : (
-              <Toggle
-                style={{ background: "black", color: "white" }}
-                href="signin"
-              >
-                Sign in
-              </Toggle>
+              <>
+                {user ? (
+                  <Button colorScheme="teal" onClick={signout}>
+                    Sign out
+                  </Button>
+                ) : (
+                  <Toggle
+                    style={{ background: "black", color: "white" }}
+                    href="signin"
+                  >
+                    Sign in
+                  </Toggle>
+                )}
+              </>
             )}
           </>
         )}
