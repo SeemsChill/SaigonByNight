@@ -41,7 +41,7 @@ function useProvideAuth() {
       setUser(user);
       Cookies.set("sbn-session-id", user.token);
       return user;
-   }
+    }
     Cookies.remove("sbn-session-id");
     localStorage.removeItem("Authorization");
     setUser(false);
@@ -55,29 +55,33 @@ function useProvideAuth() {
         handleUser(userCredential.user);
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
-        }).then(async () => {
-          const res = await fetcherSignUp("http://localhost:8000/api/post/register/user/", username, email, hashedPass); 
-          localStorage.setItem("Authorization", res.data.token);
-          setSuccess(res.data.success);
-          setTimeout(() => {
-            setSuccess("");
-          }, 3000);
-        }).catch((error) => console.log(error));
+        })
+          .then(async () => {
+            const res = await fetcherSignUp(
+              "http://localhost:8000/api/post/register/user/",
+              username,
+              email,
+              hashedPass
+            );
+            localStorage.setItem("Authorization", res.data.token);
+          })
+          .catch((error) => console.log(error));
       }
     );
   };
-  
+
   const signIn = async (email, password) => {
     const hashedPass = sha256(password);
-    return signInWithEmailAndPassword(auth, email, hashedPass).then(async (userCredential) => {
-      handleUser(userCredential.user);
-      const res = await fetcherSignIn("http://localhost:8000/api/post/login/", hashedPass);
-      localStorage.setItem("Authorization", res.data.token);
-      setSuccess(res.data.success);
-      setTimeout(() => {
-        setSuccess("");
-      }, 3000);
-    }).catch((error) => console.log(error));
+    return signInWithEmailAndPassword(auth, email, hashedPass)
+      .then(async (userCredential) => {
+        handleUser(userCredential.user);
+        const res = await fetcherSignIn(
+          "http://localhost:8000/api/post/login/",
+          hashedPass
+        );
+        localStorage.setItem("Authorization", res.data.token);
+      })
+      .catch((error) => console.log(error));
   };
 
   const signout = () => {
@@ -90,8 +94,8 @@ function useProvideAuth() {
   }, []);
   useEffect(() => {
     axios.get("http://localhost:8000/api/get/csrf/", {
-    method: "GET",
-    credentials: "include",
+      method: "GET",
+      credentials: "include",
     });
   }, []);
 

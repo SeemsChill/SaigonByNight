@@ -14,6 +14,7 @@ import {
   FormLabel,
   Input,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import Layout from "@/components/layouts/format";
@@ -28,7 +29,7 @@ const SignUp = () => {
     register,
     formState: { errors },
   } = useForm();
-  const { classicSignUp, success } = useAuth();
+  const { classicSignUp } = useAuth();
 
   function onSubmit(values) {
     if (values.password == values.repassword) {
@@ -60,13 +61,6 @@ const SignUp = () => {
           transform={{ base: "", md: "", lg: "translateX(-9em)" }}
           borderRadius="10px"
         >
-          {success && (
-            <Alert status="success" variant="top-accent" borderRadius="5px" w="90%">
-              <AlertIcon/>
-              {success}
-            </Alert>
-          )
-          }
           {error && (
             <Alert
               status="error"
@@ -87,7 +81,7 @@ const SignUp = () => {
                 errors.password ||
                 errors.repassword
               }
-              id="signin-form"
+              id="signup-form"
               mt={4}
             >
               <FormLabel mt={4}>username:</FormLabel>
@@ -183,14 +177,21 @@ const SignUp = () => {
               href="/signup"
               style={{ color: "teal", fontWeight: "bold", marginLeft: "4px" }}
             >
-              signin here!
+              signin here
             </a>
+            !
           </Text>
           <HStack mt={8}>
-            <Button bg="#e73827" leftIcon={<FaGoogle />}>
+            <Button
+              bg={useColorModeValue("white", "#e73827")}
+              leftIcon={<FaGoogle />}
+            >
               Sign with Google
             </Button>
-            <Button bg="black" leftIcon={<FaGithub />}>
+            <Button
+              bg={useColorModeValue("white", "black")}
+              leftIcon={<FaGithub />}
+            >
               Sign with Github
             </Button>
           </HStack>

@@ -21,9 +21,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { useAuth } from "@/libs/firebase/auth";
 
 const Navbar = ({ router }) => {
-  const isHome = router.route === "/" ? true : false;
-  const isSignIn = router.route === "/signin" ? true : false;
-  const { user, signout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <Box
@@ -31,7 +29,7 @@ const Navbar = ({ router }) => {
       w="100%"
       bg={useColorModeValue("#ffffff40", "#20202380")}
       css={{ backdropFilter: "blur(10px)" }}
-      zIndex={1}
+      zIndex={2}
     >
       <Flex
         as="nav"
@@ -44,72 +42,50 @@ const Navbar = ({ router }) => {
         align="center"
       >
         <Logo />
-        {isHome ? (
-          <Box display="flex">
-            <ThemeToggle />
-            <Box
-              ml={2}
-              display={{ base: "inline-block", md: "none", lg: "none" }}
-            >
-              <Menu isLazy id="navbar-menu">
-                <MenuButton
-                  as={IconButton}
-                  icon={<HamburgerIcon />}
-                  variant="outline"
-                  aria-label="Options"
-                />
-                <MenuList>
-                  <NextLink href="/signin" passHref>
-                    <MenuItem as={Link}>Sign in</MenuItem>
-                  </NextLink>
-                  <NextLink href="/signup" passHref>
-                    <MenuItem as={Link}>Sign up</MenuItem>
-                  </NextLink>
-                </MenuList>
-              </Menu>
-            </Box>
-            <Container display={{ base: "none", md: "inline-block" }}>
-              <Toggle
-                style={{ background: "black", color: "white" }}
-                href="signin"
+        <Box display="flex">
+          <ThemeToggle />
+          {user ? (
+            <></>
+          ) : (
+            <>
+              <Box
+                ml={2}
+                display={{ base: "inline-block", md: "none", lg: "none" }}
               >
-                Sign in
-              </Toggle>
-              <Toggle
-                style={{ background: "white", color: "black" }}
-                href="signup"
-              >
-                Sign up
-              </Toggle>
-            </Container>
-          </Box>
-        ) : (
-          <>
-            {isSignIn ? (
-              <Toggle
-                style={{ background: "black", color: "white" }}
-                href="signup"
-              >
-                Sign up
-              </Toggle>
-            ) : (
-              <>
-                {user ? (
-                  <Button colorScheme="teal" onClick={signout}>
-                    Sign out
-                  </Button>
-                ) : (
-                  <Toggle
-                    style={{ background: "black", color: "white" }}
-                    href="signin"
-                  >
-                    Sign in
-                  </Toggle>
-                )}
-              </>
-            )}
-          </>
-        )}
+                <Menu isLazy id="navbar-menu">
+                  <MenuButton
+                    as={IconButton}
+                    icon={<HamburgerIcon />}
+                    variant="outline"
+                    aria-label="Options"
+                  />
+                  <MenuList>
+                    <NextLink href="/signin" passHref>
+                      <MenuItem as={Link}>Sign in</MenuItem>
+                    </NextLink>
+                    <NextLink href="/signup" passHref>
+                      <MenuItem as={Link}>Sign up</MenuItem>
+                    </NextLink>
+                  </MenuList>
+                </Menu>
+              </Box>
+              <Container display={{ base: "none", md: "inline-block" }}>
+                <Toggle
+                  style={{ background: "black", color: "white" }}
+                  href="signin"
+                >
+                  Sign in
+                </Toggle>
+                <Toggle
+                  style={{ background: "white", color: "black" }}
+                  href="signup"
+                >
+                  Sign up
+                </Toggle>
+              </Container>
+            </>
+          )}
+        </Box>
       </Flex>
     </Box>
   );
