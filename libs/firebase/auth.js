@@ -4,13 +4,17 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
   onIdTokenChanged,
   signOut,
   updateProfile,
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  GithubAuthProvider,
 } from "firebase/auth";
 import Cookies from "js-cookie";
 import sha256 from "js-sha256";
-import { fetcherSignUp, fetcherSignIn } from "../engines/fetcher";
+import { fetcherSignIn, fetcherSignUp, fetcherSignUpThirdParty } from "../engines/fetcher";
 import axios from "axios";
 import useSWR from "swr";
 
@@ -32,7 +36,9 @@ const useAuth = () => {
 
 function useProvideAuth() {
   const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isSubmit, setSubmit] = useState(false);
   const auth = getAuth();
 
   const handleUser = async (rawUser) => {
@@ -48,10 +54,19 @@ function useProvideAuth() {
     return false;
   };
 
-  const classicSignUp = async (username, email, password) => {
+  const classicSignUp = async (username, email, password, confirmPassword) => {
+    if (password != confirmPassword) {
+      setError("Passwords do not match");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      return;
+    }
+
+    setSubmit(true);
     const hashedPass = sha256(password);
-    return createUserWithEmailAndPassword(auth, email, hashedPass).then(
-      (userCredential) => {
+    return createUserWithEmailAndPassword(auth, email, hashedPass)
+      .then((userCredential) => {
         handleUser(userCredential.user);
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
@@ -65,12 +80,23 @@ function useProvideAuth() {
             );
             localStorage.setItem("Authorization", res.data.token);
           })
-          .catch((error) => console.log(error));
-      }
-    );
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        setSubmit(false);
+        if (error.code == "auth/email-already-in-use") {
+          setError("Email already in use.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+      });
   };
 
-  const signIn = async (email, password) => {
+  const classicSignIn = async (email, password) => {
+    setSubmit(true);
     const hashedPass = sha256(password);
     return signInWithEmailAndPassword(auth, email, hashedPass)
       .then(async (userCredential) => {
@@ -81,7 +107,81 @@ function useProvideAuth() {
         );
         localStorage.setItem("Authorization", res.data.token);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setSubmit(false);
+        if (error.code == "auth/wrong-password") {
+          setError("Incorrect password.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+        if (error.code == "auth/user-not-found") {
+          setError("User not found, please sign-up.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+      });
+  };
+
+  const signInWithGoogle = async () => {
+    return signInWithPopup(auth, new GoogleAuthProvider()).then(async (userCredential) => {
+      handleUser(userCredential.user);
+      const res = await fetcherSignUp(
+        "http://localhost:8000/api/post/register/user/",
+        user.name,
+        "",
+        ""
+      ); 
+      localStorage.setItem("Authorization", res.data.token);
+    }).catch((error) => {
+      if(error.code == "auth/account-exists-with-different-credential") {
+        setError("Account already existed in other platform.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
+      } 
+    });
+  };
+
+  const signInWithGithub = async () => {
+    return signInWithPopup(auth, new GithubAuthProvider()).then(async (userCredential) => {
+      handleUser(userCredential.user);
+      const res = await fetcherSignUp(
+        "http://localhost:8000/api/post/register/user/",
+        user.name,
+        "",
+        ""
+      );
+      localStorage.setItem("Authorization", res.data.token);
+    }).catch((error) => {
+      if(error.code == "auth/account-exists-with-different-credential") {
+        setError("Account already existed in other platform.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
+      } 
+    });
+  };
+
+  const signInWithFacebook = async () => {
+    return signInWithPopup(auth, new FacebookAuthProvider()).then(async (userCredential) => {
+      handleUser(userCredential.user);
+      const res = await fetcherSignUp(
+        "http://localhost:8000/api/post/register/user/",
+        user.name,
+        "",
+        ""
+      );
+      localStorage.setItem("Authorization", res.data.token)
+    }).catch((error) => {
+      if(error.code == "auth/account-exists-with-different-credential") {
+        setError("Account already existed in other platform.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
+      }
+    }); 
   };
 
   const signout = () => {
@@ -101,10 +201,15 @@ function useProvideAuth() {
 
   return {
     user,
+    error,
     success,
+    isSubmit,
+    classicSignIn,
     classicSignUp,
-    signIn,
     signout,
+    signInWithFacebook,
+    signInWithGoogle,
+    signInWithGithub,
   };
 }
 

@@ -21,7 +21,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { useAuth } from "@/libs/firebase/auth";
 
 const Navbar = ({ router }) => {
-  const { user } = useAuth();
+  const { user, signout } = useAuth();
 
   return (
     <Box
@@ -45,7 +45,16 @@ const Navbar = ({ router }) => {
         <Box display="flex">
           <ThemeToggle />
           {user ? (
-            <></>
+            <Button
+              onClick={() => signout()}
+              bg={useColorModeValue("black", "white")}
+              color={useColorModeValue("white", "black")}
+              ml={"0.5rem"}
+              transition="all 400ms ease-in-out"
+              _hover={{ transform: "scale(1.1)" }}
+            >
+              Sign out
+            </Button>
           ) : (
             <>
               <Box

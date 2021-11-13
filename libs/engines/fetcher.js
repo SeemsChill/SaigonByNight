@@ -23,6 +23,21 @@ const fetcherSignUp = async (url, name, email, password) => {
   return data;
 };
 
+const fetcherSignUpThirdParty = async (url) => {
+  const data = await axios.post(
+    `${url}` ,
+    {},
+    {
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      credentials: "include"
+    }
+  );
+
+  return data;
+};
+
 const fetcherSignIn = async (url, password) => {
   const data = await axios.post(
     `${url}`,
@@ -39,4 +54,4 @@ const fetcherSignIn = async (url, password) => {
   return data;
 };
 
-export { fetcherSignIn, fetcherSignUp };
+export { fetcherSignIn, fetcherSignUp, fetcherSignUpThirdParty };

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import {
   Alert,
   AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Container,
@@ -14,6 +16,7 @@ import {
   FormLabel,
   Input,
   Text,
+  Spinner,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
@@ -23,23 +26,20 @@ import { useAuth } from "@/libs/firebase/auth";
 import Cookies from "js-cookie";
 
 const SignUp = () => {
-  const [error, setError] = useState("");
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
-  const { classicSignUp } = useAuth();
+  const { classicSignUp, error, isSubmit } = useAuth();
 
   function onSubmit(values) {
-    if (values.password == values.repassword) {
-      classicSignUp(values.username, values.email, values.password);
-    } else {
-      setError("Passwords do not match.");
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-    }
+    classicSignUp(
+      values.username,
+      values.email,
+      values.password,
+      values.confirm
+    );
   }
 
   return (
@@ -64,108 +64,146 @@ const SignUp = () => {
           {error && (
             <Alert
               status="error"
-              borderRadius="5px"
-              w="90%"
-              transition="all 400ms ease-in-out"
+              w={"90%"}
+              borderRadius={"40px"}
+              bg={"white"}
+              color={"black"}
+              position="absolute"
+              transform={"translateY(-2rem)"}
             >
-              <AlertIcon />
-              {error}
+              <AlertIcon color={"black"} />
+              <AlertTitle mr={2}>{error}</AlertTitle>
             </Alert>
           )}
           <Heading>Sign up</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl
-              isInvalid={
-                errors.username ||
-                errors.email ||
-                errors.password ||
-                errors.repassword
-              }
-              id="signup-form"
+              id="signup-username"
+              isInvalid={errors.username}
               mt={4}
             >
               <FormLabel mt={4}>username:</FormLabel>
               <Input
-                id="username"
-                type="text"
-                placeholder="password"
                 w="90%"
-                transition="all 400ms ease-in-out"
+                transition="all 300ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
+                placeholder="君のユーザー名"
                 {...register("username", {
-                  required: "This field is required.",
+                  required: "This is required",
+                  pattern: {
+                    value: /^[A-Z0-9_]{2,}$/i,
+                    message: "Allow only alphabet characters and '_' syntax.",
+                  },
                   minLength: {
-                    value: 4,
-                    message: "Minimum length should be 4.",
+                    value: 8,
+                    message: "Minimum characters should be atleast 8.",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Maximum characters should be 20.",
                   },
                 })}
               />
               <FormErrorMessage>
                 {errors.username && errors.username.message}
               </FormErrorMessage>
-              <FormLabel mt={4}>email:</FormLabel>
+            </FormControl>
+            <FormControl id="signup-email" isInvalid={errors.email} mt={4}>
+              <FormLabel>email:</FormLabel>
               <Input
-                id="email"
-                placeholder="email"
-                w="90%"
-                transition="all 400ms ease-in-out"
+                w={"90%"}
+                transition="all 300ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
+                placeholder="君の
+Eメール"
                 {...register("email", {
-                  required: "Required",
+                  required: "This is required",
                   pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    value: /^[A-Z0-9_-]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                    message:
+                      "Invalid email (allow only alphabet, number, [_, -]).",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Mimimum email characters length is 8.",
+                  },
+                  maxLength: {
+                    value: 40,
+                    message: "Maximum email characters length is 40.",
                   },
                 })}
               />
               <FormErrorMessage>
                 {errors.email && errors.email.message}
               </FormErrorMessage>
+            </FormControl>
+            <FormControl
+              id="signup-password"
+              isInvalid={errors.password}
+              mt={4}
+            >
               <FormLabel mt={4}>password:</FormLabel>
               <Input
-                id="password"
-                placeholder="password"
-                w="90%"
                 type="password"
-                transition="all 400ms ease-in-out"
+                w={"90%"}
+                transition="all 300ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
+                placeholder="君のパスワード"
                 {...register("password", {
-                  required: "This field is required.",
+                  required: "You must specify a password.",
+                  pattern: {
+                    value: /^[A-Z0-9@_]{2,}$/i,
+                    message: "Allow only alphabet, number, [@, _].",
+                  },
                   minLength: {
-                    value: 4,
-                    message: "Minimum length should be 4.",
+                    value: 8,
+                    message: "Password must have at least 8 characters.",
+                  },
+                  maxLength: {
+                    value: 40,
+                    message: "Maximum password characters length is 40.",
                   },
                 })}
               />
               <FormErrorMessage>
-                {errors.password && errors.password.message}
+                {errors.password && errors.password.messsage}
               </FormErrorMessage>
-              <FormLabel mt={4}>re-enter password:</FormLabel>
+            </FormControl>
+            <FormControl id="signup-confirm" isInvalid={errors.confirm} mt={4}>
+              <FormLabel mt={4}>confirm password:</FormLabel>
               <Input
-                id="re-password"
-                type="password"
-                placeholder="re-enter password"
-                w="90%"
-                transition="all 400ms ease-in-out"
+                w={"90%"}
+                transition="all 300ms ease-in-out"
                 _hover={{ transform: "scale(1.1)" }}
-                {...register("repassword", {
-                  required: "This field is required.",
+                placeholder="パスワードを認証する, お願い."
+                type="password"
+                {...register("confirm", {
+                  required: "You must specify the password again.",
+                  pattern: {
+                    value: /^[A-Z0-9_-]{2,}$/i,
+                    message: "Allow only alphabet, number, [@, _].",
+                  },
                   minLength: {
-                    value: 4,
-                    message: "Minimum length should be 4.",
+                    value: 8,
+                    message: "Password must have at least 8 characters.",
+                  },
+                  maxLength: {
+                    value: 40,
+                    message: "Maxmimum password characters length is 40.",
                   },
                 })}
               />
               <FormErrorMessage>
-                {errors.repassword && errors.repassword.message}
+                {errors.confirm && errors.confirm.message}
               </FormErrorMessage>
             </FormControl>
             <Button
               mt={4}
-              colorScheme="teal"
-              color="white"
+              isLoading={isSubmit}
+              bg={useColorModeValue("black", "white")}
+              color={useColorModeValue("white", "black")}
               type="submit"
-              transition="all 300ms ease-in-out"
+              transition="all 400ms ease-in-out"
               _hover={{ transform: "scale(1.1)" }}
             >
               Submit
@@ -174,27 +212,17 @@ const SignUp = () => {
           <Text mt={8}>
             Already have an account?
             <a
-              href="/signup"
-              style={{ color: "teal", fontWeight: "bold", marginLeft: "4px" }}
+              href="/signin"
+              style={{
+                color: useColorModeValue("black", "white"),
+                fontWeight: "bold",
+                marginLeft: "0.5rem",
+              }}
             >
-              signin here
+              sign in here
             </a>
             !
           </Text>
-          <HStack mt={8}>
-            <Button
-              bg={useColorModeValue("white", "#e73827")}
-              leftIcon={<FaGoogle />}
-            >
-              Sign with Google
-            </Button>
-            <Button
-              bg={useColorModeValue("white", "black")}
-              leftIcon={<FaGithub />}
-            >
-              Sign with Github
-            </Button>
-          </HStack>
         </Box>
       </Container>
     </Layout>

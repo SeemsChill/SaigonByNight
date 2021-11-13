@@ -2,6 +2,7 @@ import React from "react";
 import {
   Alert,
   AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Container,
@@ -16,13 +17,14 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaGoogle, FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub, FaFacebook } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
 const SignIn = () => {
+  const { classicSignIn, error, isSubmit, signInWithFacebook, signInWithGoogle, signInWithGithub } = useAuth();
   const {
     handleSubmit,
     register,
@@ -30,8 +32,7 @@ const SignIn = () => {
   } = useForm();
 
   function onSubmit(values) {
-    setActive(true);
-    signIn(values.email, values.password);
+    classicSignIn(values.email, values.password);
   }
 
   return (
@@ -53,47 +54,91 @@ const SignIn = () => {
           transform={{ base: "", md: "", lg: "translateX(-9em)" }}
           borderRadius="10px"
         >
+          {error && (
+            <Alert
+              status="error"
+              w={"90%"}
+              borderRadius={"40px"}
+              bg={"white"}
+              color={"black"}
+              position="absolute"
+              transform={"translateY(-2rem)"}
+            >
+              <AlertIcon color={"black"} />
+              <AlertTitle mr={2}>{error}</AlertTitle>
+            </Alert>
+          )}
           <Heading>Sign in</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl id="signin-email" isInvalid={errors.email} mt={4}>
               <FormLabel mt={4}>email:</FormLabel>
-              <Input w="90%" transition="all 400ms ease-in-out" _hover={{transform: "scale(1.1)"}}  placeholder="君のEメール" {...register("email", {
-                required: "Required",
-                pattern: {
-                  value: /^[A-Z0-9]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address."
-                },
-                minLength: {
-                  value: 8,
-                  message: "Minimum length must atleast be 8."
-                }
-              })}/>
+              <Input
+                w="90%"
+                transition="all 300ms ease-in-out"
+                _hover={{ transform: "scale(1.1)" }}
+                placeholder="君のEメール"
+                {...register("email", {
+                  required: "Required",
+                  pattern: {
+                    value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                    message:
+                      "Invalid email address (allow only alphabets, numbers, [_, -]).",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Minimum email characters length is 8.",
+                  },
+                  maxLength: {
+                    value: 40,
+                    message: "Maximum email characters length is 40.",
+                  },
+                })}
+              />
               <FormErrorMessage>
                 {errors.email && errors.email.message}
               </FormErrorMessage>
-            </FormControl> 
-            <FormControl id="signin-password" isInvalid={errors.password} mt={4}>
+            </FormControl>
+            <FormControl
+              id="signin-password"
+              isInvalid={errors.password}
+              mt={4}
+            >
               <FormLabel mt={4}>password:</FormLabel>
-              <Input w="90%" transition="all 400ms ease-in-out" _hover={{transform: "scale(1.1)"}} placeholder="君のパスワード" {...register("password", {
-                required: "Required",
-                pattern: {
-                  value: /^[A-Z0-9]{2,}$/i,
-                  message: "Invalid password key syntaxs."
-                },
-                minLength: {
-                  value: 8,
-                  message: "Mimimum length must atleast be 8."
-                }
-              })}/>
+              <Input
+                w="90%"
+                transition="all 300ms ease-in-out"
+                _hover={{ transform: "scale(1.1)" }}
+                placeholder="君のパスワード"
+                {...register("password", {
+                  required: "Required",
+                  pattern: {
+                    value: /^[A-Z0-9@_]{2,}$/i,
+                    message:
+                      "Invalid password key syntaxs (allow only alphabets, numbers, [@, _]).",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Mimimum password characters length is 8.",
+                  },
+                  maxLength: {
+                    value: 40,
+                    message: "Maximum password characters length is 40.",
+                  },
+                })}
+              />
               <FormErrorMessage>
                 {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
+
             <Button
               mt={4}
-              colorScheme="teal"
-              color="white"
+              isLoading={isSubmit}
+              bg={useColorModeValue("black", "white")}
+              color={useColorModeValue("white", "black")}
+              transition="all 400ms ease-in-out"
               type="submit"
+              _hover={{ transform: "scale(1.1)" }}
             >
               Submit
             </Button>
@@ -102,9 +147,13 @@ const SignIn = () => {
             Still not have account?
             <a
               href="/signup"
-              style={{ color: "teal", fontWeight: "bold", marginLeft: "4px" }}
+              style={{
+                color: useColorModeValue("black", "white"),
+                fontWeight: "bold",
+                marginLeft: "0.5rem",
+              }}
             >
-              signup here
+              sign-up here
             </a>
             !
           </Text>
@@ -112,7 +161,11 @@ const SignIn = () => {
             Forgot{" "}
             <a
               href="/forgot"
-              style={{ color: "teal", fontWeight: "bold", marginLeft: "4px" }}
+              style={{
+                color: useColorModeValue("black", "white"),
+                fontWeight: "bold",
+                marginLeft: "0.5rem",
+              }}
             >
               password
             </a>
@@ -122,15 +175,20 @@ const SignIn = () => {
             <Button
               bg={useColorModeValue("white", "#e73827")}
               leftIcon={<FaGoogle />}
+              onClick={signInWithGoogle}
             >
-              Sign with Google
+              Google
             </Button>
             <Button
               bg={useColorModeValue("white", "black")}
               leftIcon={<FaGithub />}
+              onClick={signInWithGithub}
             >
-              Sign with Github
+              Github
             </Button>
+            <Button colorScheme="facebook" leftIcon={<FaFacebook />} onClick={signInWithFacebook}>
+    Facebook
+  </Button>
           </HStack>
         </Box>
         <Box
