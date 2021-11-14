@@ -207,6 +207,7 @@ function useProvideAuth() {
       method: "GET",
       credentials: "include",
     });
+    console.log(csrf);
   }, []);
 
   return {
