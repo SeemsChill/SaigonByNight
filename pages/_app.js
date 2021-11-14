@@ -8,7 +8,7 @@ const Global = ({ Component, pageProps, router }) => {
   return (
     <ChakraProvider theme={theme}>
       <AuthProvider>
-        <Main router={router}>
+        <Main>
           <AnimatePresence exitBeforeEnter initial={true}>
             <Component {...pageProps} key={router.route} />
           </AnimatePresence>

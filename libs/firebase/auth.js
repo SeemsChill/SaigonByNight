@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
-import auth from "./init";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -12,15 +11,11 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
 } from "firebase/auth";
+import app from "./init";
 import Cookies from "js-cookie";
 import sha256 from "js-sha256";
-import {
-  fetcherSignIn,
-  fetcherSignUp,
-  fetcherSignUpThirdParty,
-} from "../engines/fetcher";
+import { fetcherSignIn, fetcherSignUp } from "../engines/fetcher";
 import axios from "axios";
-import useSWR from "swr";
 
 axios.defaults.xsrfHeaderName = "x-csrftoken";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -41,9 +36,7 @@ const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isSubmit, setSubmit] = useState(false);
-  const auth = getAuth();
 
   const handleUser = async (rawUser) => {
     if (rawUser) {
@@ -59,6 +52,7 @@ function useProvideAuth() {
   };
 
   const classicSignUp = async (username, email, password, confirmPassword) => {
+    const auth = getAuth();
     if (password != confirmPassword) {
       setError("Passwords do not match");
       setTimeout(() => {
@@ -100,6 +94,7 @@ function useProvideAuth() {
   };
 
   const classicSignIn = async (email, password) => {
+    const auth = getAuth();
     setSubmit(true);
     const hashedPass = sha256(password);
     return signInWithEmailAndPassword(auth, email, hashedPass)
@@ -129,6 +124,7 @@ function useProvideAuth() {
   };
 
   const signInWithGoogle = async () => {
+    const auth = getAuth();
     return signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
@@ -151,6 +147,7 @@ function useProvideAuth() {
   };
 
   const signInWithGithub = async () => {
+    const auth = getAuth();
     return signInWithPopup(auth, new GithubAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
@@ -173,6 +170,7 @@ function useProvideAuth() {
   };
 
   const signInWithFacebook = async () => {
+    const auth = getAuth();
     return signInWithPopup(auth, new FacebookAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
@@ -195,10 +193,12 @@ function useProvideAuth() {
   };
 
   const signout = () => {
+    const auth = getAuth();
     return signOut(auth).then(() => handleUser(false));
   };
 
   useEffect(() => {
+    const auth = getAuth();
     const unsubscribe = onIdTokenChanged(auth, handleUser);
     return () => unsubscribe();
   }, []);
@@ -212,7 +212,6 @@ function useProvideAuth() {
   return {
     user,
     error,
-    success,
     isSubmit,
     classicSignIn,
     classicSignUp,

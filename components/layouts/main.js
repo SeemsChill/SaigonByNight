@@ -1,10 +1,8 @@
 import Head from "next/head";
-import dynamic from "next/dynamic";
 import Navbar from "../navbar";
 import { Box, Container } from "@chakra-ui/react";
-import Toggle from "../toggle";
 
-const Main = ({ children, router }) => {
+const Main = ({ children }) => {
   return (
     <Box as="main" pb={8}>
       <Head>
@@ -15,7 +13,7 @@ const Main = ({ children, router }) => {
         <title>Saigon-by-night</title>
       </Head>
 
-      <Navbar router={router} />
+      <Navbar />
 
       <Container maxW="container.lg" pt={"5rem"}>
         {children}

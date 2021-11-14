@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import {
   Alert,
   AlertIcon,
@@ -6,10 +7,8 @@ import {
   Box,
   Button,
   Container,
-  Flex,
   Heading,
   HStack,
-  Form,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -152,30 +151,32 @@ const SignIn = () => {
           </form>
           <Text mt={8}>
             Still not have account?
-            <a
-              href="/signup"
-              style={{
-                color: useColorModeValue("black", "white"),
-                fontWeight: "bold",
-                marginLeft: "0.5rem",
-              }}
-            >
-              sign-up here
-            </a>
+            <Link href="/signup">
+              <a
+                style={{
+                  color: useColorModeValue("black", "white"),
+                  fontWeight: "bold",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                sign-up here
+              </a>
+            </Link>
             !
           </Text>
           <Text mt={4}>
             Forgot{" "}
-            <a
-              href="/forgot"
-              style={{
-                color: useColorModeValue("black", "white"),
-                fontWeight: "bold",
-                marginLeft: "0.5rem",
-              }}
-            >
-              password
-            </a>
+            <Link href="/forgot">
+              <a
+                style={{
+                  color: useColorModeValue("black", "white"),
+                  fontWeight: "bold",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                password
+              </a>
+            </Link>
             ?
           </Text>
           <HStack mt={8}>

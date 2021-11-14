@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
+import Link from "next/link";
 import {
   Alert,
   AlertIcon,
@@ -7,23 +7,17 @@ import {
   Box,
   Button,
   Container,
-  Flex,
   Heading,
-  HStack,
-  Form,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
   Text,
-  Spinner,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaGoogle, FaGithub } from "react-icons/fa";
 import Layout from "@/components/layouts/format";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
-import Cookies from "js-cookie";
 
 const SignUp = () => {
   const {
@@ -211,16 +205,17 @@ Eメール"
           </form>
           <Text mt={8}>
             Already have an account?
-            <a
-              href="/signin"
-              style={{
-                color: useColorModeValue("black", "white"),
-                fontWeight: "bold",
-                marginLeft: "0.5rem",
-              }}
-            >
-              sign in here
-            </a>
+            <Link href="/signin">
+              <a
+                style={{
+                  color: useColorModeValue("black", "white"),
+                  fontWeight: "bold",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                sign in here
+              </a>
+            </Link>
             !
           </Text>
         </Box>

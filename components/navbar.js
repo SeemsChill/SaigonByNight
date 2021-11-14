@@ -7,7 +7,6 @@ import {
   Flex,
   IconButton,
   Link,
-  Text,
   Menu,
   MenuButton,
   MenuItem,
@@ -20,7 +19,7 @@ import Toggle from "./toggle";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useAuth } from "@/libs/firebase/auth";
 
-const Navbar = ({ router }) => {
+const Navbar = () => {
   const { user, signout } = useAuth();
 
   return (
@@ -47,8 +46,6 @@ const Navbar = ({ router }) => {
           {user ? (
             <Button
               onClick={() => signout()}
-              bg={useColorModeValue("black", "white")}
-              color={useColorModeValue("white", "black")}
               ml={"0.5rem"}
               transition="all 400ms ease-in-out"
               _hover={{ transform: "scale(1.1)" }}

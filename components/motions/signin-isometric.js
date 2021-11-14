@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { keyframes, css } from "@emotion/react";
+import { keyframes } from "@emotion/react";
 import SignInSVG from "../../public/signin.js";
 
 const bounce = keyframes`
