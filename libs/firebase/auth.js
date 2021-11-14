@@ -71,7 +71,7 @@ function useProvideAuth() {
         })
           .then(async () => {
             const res = await fetcherSignUp(
-              "http://localhost:8000/api/post/register/user/",
+              `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
               username,
               email,
               hashedPass
@@ -101,7 +101,7 @@ function useProvideAuth() {
       .then(async (userCredential) => {
         handleUser(userCredential.user);
         const res = await fetcherSignIn(
-          "http://localhost:8000/api/post/login/",
+          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/`,
           hashedPass
         );
         localStorage.setItem("Authorization", res.data.token);
@@ -129,7 +129,7 @@ function useProvideAuth() {
       .then(async (userCredential) => {
         handleUser(userCredential.user);
         const res = await fetcherSignUp(
-          "http://localhost:8000/api/post/register/user/",
+          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
           "",
           ""
@@ -152,7 +152,7 @@ function useProvideAuth() {
       .then(async (userCredential) => {
         handleUser(userCredential.user);
         const res = await fetcherSignUp(
-          "http://localhost:8000/api/post/register/user/",
+          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
           "",
           ""
@@ -175,7 +175,7 @@ function useProvideAuth() {
       .then(async (userCredential) => {
         handleUser(userCredential.user);
         const res = await fetcherSignUp(
-          "http://localhost:8000/api/post/register/user/",
+          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
           "",
           ""
