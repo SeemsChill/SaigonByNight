@@ -203,10 +203,13 @@ function useProvideAuth() {
     return () => unsubscribe();
   }, []);
   useEffect(async () => {
-    const data = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const data = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     console.log(data);
   }, []);
 
