@@ -1,24 +1,11 @@
 module.exports = {
   reactStrictMode: true,
-  async headers() {
-    return [
-      {
-        // matching all API routes
-        source: "https://saigon-by-night-server.herokuapp.com/api/:path*",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
+  async rewrites() {
+        return [
           {
-            key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+            source: '/api/:path*',
+            destination: 'https://saigon-by-night-server.herokuapp.com/:path*',
           },
-          {
-            key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-          },
-        ],
-      },
-    ];
-  },
+        ]
+      }
 };
