@@ -25,13 +25,13 @@ const fetcherSignUp = async (url, name, email, password) => {
 
 const fetcherSignUpThirdParty = async (url) => {
   const data = await axios.post(
-    `${url}` ,
+    `${url}`,
     {},
     {
       headers: new Headers({
         "Content-Type": "application/json",
       }),
-      credentials: "include"
+      credentials: "include",
     }
   );
 

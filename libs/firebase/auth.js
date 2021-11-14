@@ -14,7 +14,11 @@ import {
 } from "firebase/auth";
 import Cookies from "js-cookie";
 import sha256 from "js-sha256";
-import { fetcherSignIn, fetcherSignUp, fetcherSignUpThirdParty } from "../engines/fetcher";
+import {
+  fetcherSignIn,
+  fetcherSignUp,
+  fetcherSignUpThirdParty,
+} from "../engines/fetcher";
 import axios from "axios";
 import useSWR from "swr";
 
@@ -125,63 +129,69 @@ function useProvideAuth() {
   };
 
   const signInWithGoogle = async () => {
-    return signInWithPopup(auth, new GoogleAuthProvider()).then(async (userCredential) => {
-      handleUser(userCredential.user);
-      const res = await fetcherSignUp(
-        "http://localhost:8000/api/post/register/user/",
-        user.name,
-        "",
-        ""
-      ); 
-      localStorage.setItem("Authorization", res.data.token);
-    }).catch((error) => {
-      if(error.code == "auth/account-exists-with-different-credential") {
-        setError("Account already existed in other platform.");
-        setTimeout(() => {
-          setError("");
-        }, 3000);
-      } 
-    });
+    return signInWithPopup(auth, new GoogleAuthProvider())
+      .then(async (userCredential) => {
+        handleUser(userCredential.user);
+        const res = await fetcherSignUp(
+          "http://localhost:8000/api/post/register/user/",
+          user.name,
+          "",
+          ""
+        );
+        localStorage.setItem("Authorization", res.data.token);
+      })
+      .catch((error) => {
+        if (error.code == "auth/account-exists-with-different-credential") {
+          setError("Account already existed in other platform.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+      });
   };
 
   const signInWithGithub = async () => {
-    return signInWithPopup(auth, new GithubAuthProvider()).then(async (userCredential) => {
-      handleUser(userCredential.user);
-      const res = await fetcherSignUp(
-        "http://localhost:8000/api/post/register/user/",
-        user.name,
-        "",
-        ""
-      );
-      localStorage.setItem("Authorization", res.data.token);
-    }).catch((error) => {
-      if(error.code == "auth/account-exists-with-different-credential") {
-        setError("Account already existed in other platform.");
-        setTimeout(() => {
-          setError("");
-        }, 3000);
-      } 
-    });
+    return signInWithPopup(auth, new GithubAuthProvider())
+      .then(async (userCredential) => {
+        handleUser(userCredential.user);
+        const res = await fetcherSignUp(
+          "http://localhost:8000/api/post/register/user/",
+          user.name,
+          "",
+          ""
+        );
+        localStorage.setItem("Authorization", res.data.token);
+      })
+      .catch((error) => {
+        if (error.code == "auth/account-exists-with-different-credential") {
+          setError("Account already existed in other platform.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+      });
   };
 
   const signInWithFacebook = async () => {
-    return signInWithPopup(auth, new FacebookAuthProvider()).then(async (userCredential) => {
-      handleUser(userCredential.user);
-      const res = await fetcherSignUp(
-        "http://localhost:8000/api/post/register/user/",
-        user.name,
-        "",
-        ""
-      );
-      localStorage.setItem("Authorization", res.data.token)
-    }).catch((error) => {
-      if(error.code == "auth/account-exists-with-different-credential") {
-        setError("Account already existed in other platform.");
-        setTimeout(() => {
-          setError("");
-        }, 3000);
-      }
-    }); 
+    return signInWithPopup(auth, new FacebookAuthProvider())
+      .then(async (userCredential) => {
+        handleUser(userCredential.user);
+        const res = await fetcherSignUp(
+          "http://localhost:8000/api/post/register/user/",
+          user.name,
+          "",
+          ""
+        );
+        localStorage.setItem("Authorization", res.data.token);
+      })
+      .catch((error) => {
+        if (error.code == "auth/account-exists-with-different-credential") {
+          setError("Account already existed in other platform.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
+        }
+      });
   };
 
   const signout = () => {

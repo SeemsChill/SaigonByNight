@@ -24,7 +24,14 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
 const SignIn = () => {
-  const { classicSignIn, error, isSubmit, signInWithFacebook, signInWithGoogle, signInWithGithub } = useAuth();
+  const {
+    classicSignIn,
+    error,
+    isSubmit,
+    signInWithFacebook,
+    signInWithGoogle,
+    signInWithGithub,
+  } = useAuth();
   const {
     handleSubmit,
     register,
@@ -186,9 +193,13 @@ const SignIn = () => {
             >
               Github
             </Button>
-            <Button colorScheme="facebook" leftIcon={<FaFacebook />} onClick={signInWithFacebook}>
-    Facebook
-  </Button>
+            <Button
+              colorScheme="facebook"
+              leftIcon={<FaFacebook />}
+              onClick={signInWithFacebook}
+            >
+              Facebook
+            </Button>
           </HStack>
         </Box>
         <Box
