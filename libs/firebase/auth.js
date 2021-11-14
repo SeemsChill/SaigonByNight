@@ -202,12 +202,12 @@ function useProvideAuth() {
     const unsubscribe = onIdTokenChanged(auth, handleUser);
     return () => unsubscribe();
   }, []);
-  useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`, {
+  useEffect(async () => {
+    const data = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`, {
       method: "GET",
       credentials: "include",
     });
-    console.log(csrf);
+    console.log(data);
   }, []);
 
   return {
