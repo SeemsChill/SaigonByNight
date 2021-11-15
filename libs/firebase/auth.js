@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
+import { useRouter } from "next/router";
 import {
+  deleteUser,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -17,8 +19,8 @@ import sha256 from "js-sha256";
 import { fetcherSignIn, fetcherSignUp } from "../engines/fetcher";
 import axios from "axios";
 
-axios.defaults.xsrfHeaderName = "x-csrftoken";
-axios.defaults.xsrfCookieName = "csrftoken";
+// axios.defaults.xsrfHeaderName = "x-csrftoken";
+// axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.withCredentials = true;
 
 const authContext = createContext();
@@ -37,6 +39,7 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [isSubmit, setSubmit] = useState(false);
+  const router = useRouter();
 
   const handleUser = async (rawUser) => {
     if (rawUser) {
@@ -79,7 +82,8 @@ function useProvideAuth() {
             localStorage.setItem("Authorization", res.data.token);
           })
           .catch((error) => {
-            console.log(error);
+            handleUser(false);
+            router.push("/");
           });
       })
       .catch((error) => {
@@ -134,7 +138,13 @@ function useProvideAuth() {
           "",
           ""
         );
-        localStorage.setItem("Authorization", res.data.token);
+        if(res == "Request failed with status code 401") {
+          handleUser(false);
+          router.push("/");
+        }
+        else {
+          localStorage.setItem("Authorization", res.data.token);
+        }
       })
       .catch((error) => {
         if (error.code == "auth/account-exists-with-different-credential") {
@@ -157,9 +167,15 @@ function useProvideAuth() {
           "",
           ""
         );
-        localStorage.setItem("Authorization", res.data.token);
+        if(res == "Request failed with status code 401") {
+          handleUser(false);
+          router.push("/");
+        } else {
+          localStorage.setItem("Authorization", res.data.token);
+        }
       })
       .catch((error) => {
+        console.log(error);
         if (error.code == "auth/account-exists-with-different-credential") {
           setError("Account already existed in other platform.");
           setTimeout(() => {
@@ -180,7 +196,12 @@ function useProvideAuth() {
           "",
           ""
         );
-        localStorage.setItem("Authorization", res.data.token);
+        if(res == "Request failed with status code 401") {
+          handleUser(false);
+          router.push("/");
+        } else {
+          localStorage.setItem("Authorization", res.data.token);
+        }
       })
       .catch((error) => {
         if (error.code == "auth/account-exists-with-different-credential") {
@@ -207,10 +228,9 @@ function useProvideAuth() {
       `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
       {
         method: "GET",
-        credentials: "include",
       }
     );
-    console.log(data);
+    Cookies.set("csrftoken", data.headers["x-csrftoken"]);
   }, []);
 
   return {

@@ -18,7 +18,9 @@ const fetcherSignUp = async (url, name, email, password) => {
       }),
       credentials: "include",
     }
-  );
+  ).then().catch((err) => {
+    return err.message;
+  });
 
   return data;
 };
