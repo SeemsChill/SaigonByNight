@@ -228,7 +228,11 @@ function useProvideAuth() {
         method: "GET",
       }
     );
-    Cookies.set("csrftoken", data.headers["x-csrftoken"]);
+    Cookies.set("csrftoken", data.headers["x-csrftoken"], {
+      secure: true,
+      sameSite: "none",
+      HttpOnly: false,
+    });
   }, []);
 
   return {
