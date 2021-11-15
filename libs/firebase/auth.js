@@ -208,7 +208,6 @@ function useProvideAuth() {
       {
         method: "GET",
         credentials: "include",
-        withCredentials: true,
       }
     );
     console.log(data);
