@@ -16,7 +16,7 @@ const fetcherSignUp = async (url, name, email, password) => {
       {
         headers: new Headers({
           "Content-Type": "application/json",
-          "x-forwarded-proto": "https"
+          "x-forwarded-proto": "https",
         }),
         credentials: "include",
       }
