@@ -62,7 +62,6 @@ function useProvideAuth() {
       }, 3000);
       return;
     }
-
     setSubmit(true);
     const hashedPass = sha256(password);
     return createUserWithEmailAndPassword(auth, email, hashedPass)
