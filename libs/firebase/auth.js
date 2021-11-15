@@ -80,7 +80,8 @@ function useProvideAuth() {
             );
             localStorage.setItem("Authorization", res.data.token);
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error);
             handleUser(false);
             router.push("/");
           });
