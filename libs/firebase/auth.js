@@ -18,18 +18,14 @@ import sha256 from "js-sha256";
 import { fetcherSignIn, fetcherSignUp } from "../engines/fetcher";
 import axios from "axios";
 
-// axios.defaults.xsrfHeaderName = "x-csrftoken";
-// axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.withCredentials = true;
 
 const authContext = createContext();
-
 const AuthProvider = ({ children }) => {
   const auth = useProvideAuth();
 
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
-
 const useAuth = () => {
   return useContext(authContext);
 };
@@ -78,9 +74,9 @@ function useProvideAuth() {
               hashedPass
             );
             localStorage.setItem("Authorization", res.data.token);
+            router.push("/");
           })
           .catch((error) => {
-            console.log(error);
             handleUser(false);
             router.push("/");
           });
@@ -108,6 +104,7 @@ function useProvideAuth() {
           hashedPass
         );
         localStorage.setItem("Authorization", res.data.token);
+        router.push("/");
       })
       .catch((error) => {
         setSubmit(false);
@@ -142,6 +139,7 @@ function useProvideAuth() {
           router.push("/");
         } else {
           localStorage.setItem("Authorization", res.data.token);
+          router.push("/");
         }
       })
       .catch((error) => {

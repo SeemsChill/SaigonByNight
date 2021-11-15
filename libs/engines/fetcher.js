@@ -1,10 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-// axios.defaults.xsrfHeaderName = "x-csrftoken";
-// axios.defaults.xsrfCookieName = "csrftoken";
-// axios.defaults.withCredentials = true;
-
 const fetcherSignUp = async (url, name, email, password) => {
   const data = await axios
     .post(
@@ -35,6 +31,8 @@ const fetcherSignIn = async (url, password) => {
     `${url}`,
     {
       password: `${password}`,
+      csrf: `${Cookies.get("csrftoken")}`,
+      sbnSessionId: `${Cookies.get("sbn-session-id")}`,
     },
     {
       headers: new Headers({
