@@ -5,22 +5,25 @@ import axios from "axios";
 // axios.defaults.withCredentials = true;
 
 const fetcherSignUp = async (url, name, email, password) => {
-  const data = await axios.post(
-    `${url}`,
-    {
-      username: `${name}`,
-      email: `${email}`,
-      password: `${password}`,
-    },
-    {
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      credentials: "include",
-    }
-  ).then().catch((err) => {
-    return err.message;
-  });
+  const data = await axios
+    .post(
+      `${url}`,
+      {
+        username: `${name}`,
+        email: `${email}`,
+        password: `${password}`,
+      },
+      {
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        credentials: "include",
+      }
+    )
+    .then()
+    .catch((err) => {
+      return err.message;
+    });
 
   return data;
 };

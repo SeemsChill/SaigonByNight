@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { useRouter } from "next/router";
 import {
-  deleteUser,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -81,7 +80,7 @@ function useProvideAuth() {
             );
             localStorage.setItem("Authorization", res.data.token);
           })
-          .catch((error) => {
+          .catch(() => {
             handleUser(false);
             router.push("/");
           });
@@ -138,11 +137,10 @@ function useProvideAuth() {
           "",
           ""
         );
-        if(res == "Request failed with status code 401") {
+        if (res == "Request failed with status code 401") {
           handleUser(false);
           router.push("/");
-        }
-        else {
+        } else {
           localStorage.setItem("Authorization", res.data.token);
         }
       })
@@ -167,7 +165,7 @@ function useProvideAuth() {
           "",
           ""
         );
-        if(res == "Request failed with status code 401") {
+        if (res == "Request failed with status code 401") {
           handleUser(false);
           router.push("/");
         } else {
@@ -196,7 +194,7 @@ function useProvideAuth() {
           "",
           ""
         );
-        if(res == "Request failed with status code 401") {
+        if (res == "Request failed with status code 401") {
           handleUser(false);
           router.push("/");
         } else {
