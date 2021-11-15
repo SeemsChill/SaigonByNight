@@ -23,7 +23,6 @@ axios.defaults.withCredentials = true;
 const authContext = createContext();
 const AuthProvider = ({ children }) => {
   const auth = useProvideAuth();
-
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
 const useAuth = () => {
@@ -32,6 +31,7 @@ const useAuth = () => {
 
 function useProvideAuth() {
   const [user, setUser] = useState(null);
+  const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSubmit, setSubmit] = useState(false);
   const router = useRouter();
@@ -40,16 +40,19 @@ function useProvideAuth() {
     if (rawUser) {
       const user = await formatUser(rawUser);
       setUser(user);
+      setLoading(false);
       Cookies.set("sbn-session-id", user.token);
       return user;
     }
     Cookies.remove("sbn-session-id");
     localStorage.removeItem("Authorization");
     setUser(false);
+    setLoading(false);
     return false;
   };
 
   const classicSignUp = async (username, email, password, confirmPassword) => {
+    setLoading(true);
     const auth = getAuth();
     if (password != confirmPassword) {
       setError("Passwords do not match");
@@ -75,14 +78,17 @@ function useProvideAuth() {
             );
             localStorage.setItem("Authorization", res.data.token);
             router.push("/");
+            setLoading(false);
           })
-          .catch((error) => {
+          .catch(() => {
+            setLoading(false);
             handleUser(false);
             router.push("/");
           });
       })
       .catch((error) => {
         setSubmit(false);
+        setLoading(false);
         if (error.code == "auth/email-already-in-use") {
           setError("Email already in use.");
           setTimeout(() => {
@@ -93,6 +99,7 @@ function useProvideAuth() {
   };
 
   const classicSignIn = async (email, password) => {
+    setLoading(true);
     const auth = getAuth();
     setSubmit(true);
     const hashedPass = sha256(password);
@@ -105,8 +112,10 @@ function useProvideAuth() {
         );
         localStorage.setItem("Authorization", res.data.token);
         router.push("/");
+        setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         setSubmit(false);
         if (error.code == "auth/wrong-password") {
           setError("Incorrect password.");
@@ -124,6 +133,7 @@ function useProvideAuth() {
   };
 
   const signInWithGoogle = async () => {
+    setLoading(true);
     const auth = getAuth();
     return signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (userCredential) => {
@@ -140,9 +150,11 @@ function useProvideAuth() {
         } else {
           localStorage.setItem("Authorization", res.data.token);
           router.push("/");
+          setLoading(false);
         }
       })
       .catch((error) => {
+        setLoading(false);
         if (error.code == "auth/account-exists-with-different-credential") {
           setError("Account already existed in other platform.");
           setTimeout(() => {
@@ -153,6 +165,7 @@ function useProvideAuth() {
   };
 
   const signInWithGithub = async () => {
+    setLoading(true);
     const auth = getAuth();
     return signInWithPopup(auth, new GithubAuthProvider())
       .then(async (userCredential) => {
@@ -166,12 +179,15 @@ function useProvideAuth() {
         if (res == "Request failed with status code 401") {
           handleUser(false);
           router.push("/");
+          setLoading(false);
         } else {
+          setLoading(false);
           localStorage.setItem("Authorization", res.data.token);
+          router.push("/");
         }
       })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
         if (error.code == "auth/account-exists-with-different-credential") {
           setError("Account already existed in other platform.");
           setTimeout(() => {
@@ -235,6 +251,7 @@ function useProvideAuth() {
   return {
     user,
     error,
+    isLoading,
     isSubmit,
     classicSignIn,
     classicSignUp,

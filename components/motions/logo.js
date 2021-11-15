@@ -1,4 +1,5 @@
 import React from "react";
+import { Container } from "@chakra-ui/react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
@@ -38,7 +39,9 @@ const Logo = () => {
       <a>
         <LogoBox>
           <Image src={teacup} width={55} height={55} alt="logo" />
-          <LogoText />
+          <Container display={{ base: "none", md: "inline-block" }}>
+            <LogoText />
+          </Container>
         </LogoBox>
       </a>
     </Link>
