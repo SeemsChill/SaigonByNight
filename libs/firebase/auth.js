@@ -231,7 +231,6 @@ function useProvideAuth() {
     Cookies.set("csrftoken", data.headers["x-csrftoken"], {
       secure: true,
       sameSite: "none",
-      HttpOnly: false,
     });
   }, []);
 

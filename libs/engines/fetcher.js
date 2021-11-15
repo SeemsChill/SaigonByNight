@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 // axios.defaults.xsrfHeaderName = "x-csrftoken";
 // axios.defaults.xsrfCookieName = "csrftoken";
@@ -12,13 +13,13 @@ const fetcherSignUp = async (url, name, email, password) => {
         username: `${name}`,
         email: `${email}`,
         password: `${password}`,
+        csrf: `${Cookies.get("csrftoken")}`,
+        sbnSessionId: `${Cookies.get("sbn-session-id")}`,
       },
       {
         headers: new Headers({
           "Content-Type": "application/json",
-          "x-forwarded-proto": "https",
         }),
-        credentials: "include",
       }
     )
     .then()
