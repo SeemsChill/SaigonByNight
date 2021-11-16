@@ -41,6 +41,7 @@ function useProvideAuth() {
       const user = await formatUser(rawUser);
       setUser(user);
       setLoading(false);
+      router.push("/");
       Cookies.set("sbn-session-id", user.token);
       return user;
     }
@@ -66,6 +67,9 @@ function useProvideAuth() {
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
         handleUser(userCredential.user);
+        sendEmailVerification(auth.currentUser)
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
         })
@@ -77,7 +81,6 @@ function useProvideAuth() {
               hashedPass
             );
             localStorage.setItem("Authorization", res.data.token);
-            router.push("/");
             setLoading(false);
           })
           .catch(() => {
@@ -111,7 +114,6 @@ function useProvideAuth() {
           hashedPass
         );
         localStorage.setItem("Authorization", res.data.token);
-        router.push("/");
         setLoading(false);
       })
       .catch((error) => {
@@ -149,7 +151,6 @@ function useProvideAuth() {
           router.push("/");
         } else {
           localStorage.setItem("Authorization", res.data.token);
-          router.push("/");
           setLoading(false);
         }
       })
@@ -183,7 +184,6 @@ function useProvideAuth() {
         } else {
           setLoading(false);
           localStorage.setItem("Authorization", res.data.token);
-          router.push("/");
         }
       })
       .catch((error) => {

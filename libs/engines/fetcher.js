@@ -44,4 +44,50 @@ const fetcherSignIn = async (url, password) => {
   return data;
 };
 
-export { fetcherSignIn, fetcherSignUp };
+const fetcherForgot = async (url, email) => {
+  const data = await axios
+    .post(
+      `${url}`,
+      {
+        email: `${email}`,
+        csrf: `${Cookies.get("csrftoken")}`,
+      },
+      {
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        credentials: "include",
+      }
+    )
+    .then()
+    .catch((error) => {
+      return error.response;
+    });
+  return data.status;
+};
+
+const fetcherVerification = async (url, code) => {
+  console.log(Cookies.get("csrftoken"));
+  const data = await axios
+    .post(
+      `${url}`,
+      {
+        code: code,
+        csrf: `${Cookies.get("csrftoken")}`,
+      },
+      {
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        credentials: "include",
+      }
+    )
+    .then()
+    .catch((error) => {
+      return error.response;
+    });
+
+  return data.data;
+};
+
+export { fetcherForgot, fetcherSignIn, fetcherSignUp, fetcherVerification };
