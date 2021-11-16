@@ -231,21 +231,28 @@ function useProvideAuth() {
   };
 
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onIdTokenChanged(auth, handleUser);
-    return () => unsubscribe();
+    function connectFirebase() {
+      const auth = getAuth();
+      onIdTokenChanged(auth, handleUser);
+    }
+    connectFirebase();
   }, []);
-  useEffect(async () => {
-    const data = await axios.get(
-      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
-      {
-        method: "GET",
-      }
-    );
-    Cookies.set("csrftoken", data.headers["x-csrftoken"], {
-      secure: true,
-      sameSite: "none",
-    });
+
+  useEffect(() => {
+    async function fetchCsrf() {
+      const data = await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
+        {
+          method: "GET",
+        }
+      );
+      Cookies.set("csrftoken", data.headers["x-csrftoken"], {
+        secure: true,
+        sameSite: "none",
+      });
+    }
+
+    return () => fetchCsrf();
   }, []);
 
   return {

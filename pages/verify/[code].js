@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { Heading } from "@chakra-ui/react";
 import { fetcherVerification } from "@/libs/engines/fetcher";
 

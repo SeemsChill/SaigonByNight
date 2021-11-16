@@ -15,7 +15,7 @@ import {
   FormLabel,
   Input,
   Text,
-  useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import { FaGoogle, FaGithub, FaFacebook } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
@@ -40,6 +40,7 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
   const router = useRouter();
+  const { colorMode } = useColorMode();
 
   function onSubmit(values) {
     classicSignIn(values.email, values.password);
@@ -154,8 +155,8 @@ const SignIn = () => {
                 <Button
                   mt={4}
                   isLoading={isSubmit}
-                  bg={useColorModeValue("black", "white")}
-                  color={useColorModeValue("white", "black")}
+                  bg={"black"}
+                  color={"white"}
                   transition="all 400ms ease-in-out"
                   type="submit"
                   _hover={{ transform: "scale(1.1)" }}
@@ -168,7 +169,7 @@ const SignIn = () => {
                 <Link href="/signup">
                   <a
                     style={{
-                      color: useColorModeValue("black", "white"),
+                      color: colorMode == "light" ? "black" : "white",
                       fontWeight: "bold",
                       marginLeft: "0.5rem",
                     }}
@@ -183,7 +184,7 @@ const SignIn = () => {
                 <Link href="/signin/forgot">
                   <a
                     style={{
-                      color: useColorModeValue("black", "white"),
+                      color: colorMode == "light" ? "black" : "white",
                       fontWeight: "bold",
                       marginLeft: "0.5rem",
                     }}
@@ -195,14 +196,14 @@ const SignIn = () => {
               </Text>
               <HStack mt={8}>
                 <Button
-                  bg={useColorModeValue("white", "#e73827")}
+                  bg={colorMode == "light" ? "white" : "#e73727"}
                   leftIcon={<FaGoogle />}
                   onClick={signInWithGoogle}
                 >
                   Google
                 </Button>
                 <Button
-                  bg={useColorModeValue("white", "black")}
+                  bg={colorMode == "light" ? "white" : "black"}
                   leftIcon={<FaGithub />}
                   onClick={signInWithGithub}
                 >

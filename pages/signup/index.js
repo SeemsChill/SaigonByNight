@@ -14,7 +14,7 @@ import {
   FormLabel,
   Input,
   Text,
-  useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import Layout from "@/components/layouts/format";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,7 @@ const SignUp = () => {
   } = useForm();
   const { user, isLoading, classicSignUp, error, isSubmit } = useAuth();
   const router = useRouter();
+  const { colorMode } = useColorMode();
 
   function onSubmit(values) {
     classicSignUp(
@@ -210,8 +211,8 @@ Eメール"
                 <Button
                   mt={4}
                   isLoading={isSubmit}
-                  bg={useColorModeValue("black", "white")}
-                  color={useColorModeValue("white", "black")}
+                  bg={colorMode == "light" ? "black" : "white"}
+                  color={colorMode == "light" ? "white" : "black"}
                   type="submit"
                   transition="all 400ms ease-in-out"
                   _hover={{ transform: "scale(1.1)" }}
@@ -224,7 +225,7 @@ Eメール"
                 <Link href="/signin">
                   <a
                     style={{
-                      color: useColorModeValue("black", "white"),
+                      color: colorMode == "light" ? "black" : "white",
                       fontWeight: "bold",
                       marginLeft: "0.5rem",
                     }}
