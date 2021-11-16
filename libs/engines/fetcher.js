@@ -73,7 +73,6 @@ const fetcherVerification = async (url, code) => {
       `${url}`,
       {
         code: code,
-        csrf: `${Cookies.get("csrftoken")}`,
       },
       {
         headers: new Headers({

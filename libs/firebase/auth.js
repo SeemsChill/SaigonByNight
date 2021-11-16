@@ -67,9 +67,6 @@ function useProvideAuth() {
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
         handleUser(userCredential.user);
-        sendEmailVerification(auth.currentUser)
-          .then((res) => console.log(res))
-          .catch((err) => console.log(err));
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
         })
