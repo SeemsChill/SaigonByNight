@@ -251,8 +251,7 @@ function useProvideAuth() {
         sameSite: "none",
       });
     }
-
-    return () => fetchCsrf();
+    fetchCsrf();
   }, []);
 
   return {
