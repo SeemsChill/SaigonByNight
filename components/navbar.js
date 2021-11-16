@@ -11,7 +11,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text,
+  useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { Spinner } from "@chakra-ui/react";
@@ -19,11 +19,12 @@ import Logo from "./motions/logo.js";
 import ThemeToggle from "./theme-toggle";
 import Toggle from "./toggle";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { BiLogIn } from "react-icons/bi";
+import { BiLogIn, BiUserCircle } from "react-icons/bi";
 import { useAuth } from "@/libs/firebase/auth";
 
 const Navbar = () => {
   const { user, isLoading, signout } = useAuth();
+  const { colorMode } = useColorMode();
 
   return (
     <Box
@@ -48,17 +49,28 @@ const Navbar = () => {
           <ThemeToggle />
           {user ? (
             <>
-              <Text align="center" ml="0.5rem" p="0.2rem 0.3rem" fontSize="xl">
-                {user.name}
-              </Text>
+              <NextLink href={`/user/${user.name}`}>
+                <Button
+                  bg={colorMode == "light" ? "black" : "white"}
+                  color={colorMode == "light" ? "white" : "black"}
+                  ml={"0.5rem"}
+                  transition="all 400ms ease-in-out"
+                  _hover={{ transform: "scale(1.1)" }}
+                >
+                  <BiUserCircle />
+                </Button>
+              </NextLink>
+
               <Button
                 onClick={() => signout()}
+                bg={colorMode == "light" ? "black" : "white"}
+                color={colorMode == "light" ? "white" : "black"}
                 ml={"0.5rem"}
                 transition="all 400ms ease-in-out"
-                colorScheme="teal"
-                leftIcon={<BiLogIn />}
                 _hover={{ transform: "scale(1.1)" }}
-              ></Button>
+              >
+                <BiLogIn />
+              </Button>
             </>
           ) : (
             <>
