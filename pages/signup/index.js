@@ -17,6 +17,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import Layout from "@/components/layouts/format";
+import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
@@ -26,7 +27,7 @@ const SignUp = () => {
     register,
     formState: { errors },
   } = useForm();
-  const { user, isLoading, classicSignUp, error, isSubmit } = useAuth();
+  const { user, isFetching, classicSignUp, error, isSubmit } = useAuth();
   const router = useRouter();
   const { colorMode } = useColorMode();
 
@@ -46,8 +47,10 @@ const SignUp = () => {
 
   return (
     <>
-      {isLoading ? (
-        <></>
+      {isFetching ? (
+        <Layout>
+          <Loading />
+        </Layout>
       ) : (
         <Layout title={"Sign up"}>
           <Container
@@ -122,7 +125,7 @@ const SignUp = () => {
                     transition="all 300ms ease-in-out"
                     _hover={{ transform: "scale(1.1)" }}
                     placeholder="君の
-Eメール"
+  Eメール"
                     {...register("email", {
                       required: "This is required",
                       pattern: {

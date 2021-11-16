@@ -32,6 +32,7 @@ const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [isFetching, setFetching] = useState(true);
   const [error, setError] = useState("");
   const [isSubmit, setSubmit] = useState(false);
   const router = useRouter();
@@ -41,7 +42,7 @@ function useProvideAuth() {
       const user = await formatUser(rawUser);
       setUser(user);
       setLoading(false);
-      router.push("/");
+      setFetching(false);
       Cookies.set("sbn-session-id", user.token);
       return user;
     }
@@ -49,6 +50,8 @@ function useProvideAuth() {
     localStorage.removeItem("Authorization");
     setUser(false);
     setLoading(false);
+    setFetching(false);
+    router.push("/");
     return false;
   };
 
@@ -67,6 +70,7 @@ function useProvideAuth() {
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
         handleUser(userCredential.user);
+        router.push("/");
         updateProfile(auth.currentUser, {
           displayName: `${username}`,
         })
@@ -79,6 +83,7 @@ function useProvideAuth() {
             );
             localStorage.setItem("Authorization", res.data.token);
             setLoading(false);
+            setSubmit(false);
           })
           .catch(() => {
             setLoading(false);
@@ -106,12 +111,14 @@ function useProvideAuth() {
     return signInWithEmailAndPassword(auth, email, hashedPass)
       .then(async (userCredential) => {
         handleUser(userCredential.user);
+        router.push("/");
         const res = await fetcherSignIn(
           `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/`,
           hashedPass
         );
         localStorage.setItem("Authorization", res.data.token);
         setLoading(false);
+        setSubmit(false);
       })
       .catch((error) => {
         setLoading(false);
@@ -137,6 +144,7 @@ function useProvideAuth() {
     return signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
+        router.push("/");
         const res = await fetcherSignUp(
           `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
@@ -168,6 +176,7 @@ function useProvideAuth() {
     return signInWithPopup(auth, new GithubAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
+        router.push("/");
         const res = await fetcherSignUp(
           `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
@@ -199,6 +208,7 @@ function useProvideAuth() {
     return signInWithPopup(auth, new FacebookAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
+        router.push("/");
         const res = await fetcherSignUp(
           `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
           user.name,
@@ -254,6 +264,7 @@ function useProvideAuth() {
   return {
     user,
     error,
+    isFetching,
     isLoading,
     isSubmit,
     classicSignIn,

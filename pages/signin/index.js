@@ -20,6 +20,7 @@ import {
 import { FaGoogle, FaGithub, FaFacebook } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
+import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
@@ -28,7 +29,7 @@ const SignIn = () => {
     user,
     classicSignIn,
     error,
-    isLoading,
+    isFetching,
     isSubmit,
     signInWithFacebook,
     signInWithGoogle,
@@ -53,8 +54,10 @@ const SignIn = () => {
 
   return (
     <>
-      {isLoading ? (
-        <> </>
+      {isFetching ? (
+        <Layout title="Sign in">
+          <Loading />
+        </Layout>
       ) : (
         <Layout title="Sign in">
           <Container
@@ -151,7 +154,6 @@ const SignIn = () => {
                     {errors.password && errors.password.message}
                   </FormErrorMessage>
                 </FormControl>
-
                 <Button
                   mt={4}
                   isLoading={isSubmit}

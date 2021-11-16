@@ -60,7 +60,6 @@ const Navbar = () => {
                   <BiUserCircle />
                 </Button>
               </NextLink>
-
               <Button
                 onClick={() => signout()}
                 bg={colorMode == "light" ? "black" : "white"}

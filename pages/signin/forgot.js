@@ -31,7 +31,6 @@ const Forgot = () => {
       "http://localhost:8000/api/post/forgot/",
       values.email
     );
-    console.log(res);
     if (res == 404) {
       setSuccess("");
       setError("User not found.");
