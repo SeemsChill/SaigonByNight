@@ -15,7 +15,11 @@ import {
 import app from "./init";
 import Cookies from "js-cookie";
 import sha256 from "js-sha256";
-import { fetcherSignIn, fetcherSignUp } from "../engines/fetcher";
+import {
+  fetcherSignIn,
+  fetcherSignUp,
+  fetcherCredential3rdParty,
+} from "../engines/fetcher";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
@@ -40,18 +44,21 @@ function useProvideAuth() {
   const handleUser = async (rawUser) => {
     if (rawUser) {
       const user = await formatUser(rawUser);
+      Cookies.set("sbn-session-id", user.token);
+
       setUser(user);
       setLoading(false);
       setFetching(false);
-      Cookies.set("sbn-session-id", user.token);
+
       return user;
     }
     Cookies.remove("sbn-session-id");
     localStorage.removeItem("Authorization");
+
     setUser(false);
     setLoading(false);
     setFetching(false);
-    router.push("/");
+
     return false;
   };
 
@@ -70,26 +77,26 @@ function useProvideAuth() {
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
         handleUser(userCredential.user);
-        router.push("/");
-        updateProfile(auth.currentUser, {
-          displayName: `${username}`,
-        })
-          .then(async () => {
-            const res = await fetcherSignUp(
-              `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
-              username,
-              email,
-              hashedPass
-            );
-            localStorage.setItem("Authorization", res.data.token);
-            setLoading(false);
-            setSubmit(false);
-          })
-          .catch(() => {
-            setLoading(false);
-            handleUser(false);
-            router.push("/");
-          });
+        updateProfile(auth.currentUser, { displayName: `${username}` }).then(
+          async () => {
+            const res = await fetcherSignUp(username, email, hashedPass);
+
+            if (res.status == 401) {
+              signout();
+              setLoading(false);
+              setSubmit(false);
+
+              router.push("/");
+            } else {
+              localStorage.setItem("Authorization", res.data.message);
+
+              setLoading(false);
+              setSubmit(false);
+
+              router.push("/");
+            }
+          }
+        );
       })
       .catch((error) => {
         setSubmit(false);
@@ -111,18 +118,27 @@ function useProvideAuth() {
     return signInWithEmailAndPassword(auth, email, hashedPass)
       .then(async (userCredential) => {
         handleUser(userCredential.user);
-        router.push("/");
-        const res = await fetcherSignIn(
-          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/`,
-          hashedPass
-        );
-        localStorage.setItem("Authorization", res.data.token);
-        setLoading(false);
-        setSubmit(false);
+        const res = await fetcherSignIn(hashedPass);
+
+        if (res.status == 401) {
+          signout();
+          setLoading(false);
+          setSubmit(false);
+
+          router.push("/");
+        } else {
+          localStorage.setItem("Authorization", res.data.message);
+
+          setLoading(false);
+          setSubmit(false);
+
+          router.push("/");
+        }
       })
       .catch((error) => {
         setLoading(false);
         setSubmit(false);
+
         if (error.code == "auth/wrong-password") {
           setError("Incorrect password.");
           setTimeout(() => {
@@ -138,25 +154,28 @@ function useProvideAuth() {
       });
   };
 
-  const signInWithGoogle = async () => {
+  const credentialWithGoogle = async () => {
     setLoading(true);
+    setSubmit(true);
     const auth = getAuth();
     return signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
-        router.push("/");
-        const res = await fetcherSignUp(
-          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
-          user.name,
-          "",
-          ""
-        );
-        if (res == "Request failed with status code 401") {
-          handleUser(false);
+        const res = await fetcherCredential3rdParty();
+
+        if (res.status == 401) {
+          signout();
+          setLoading(false);
+          setSubmit(false);
+
           router.push("/");
         } else {
-          localStorage.setItem("Authorization", res.data.token);
+          localStorage.setItem("Authorization", res.data.message);
+
           setLoading(false);
+          setSubmit(false);
+
+          router.push("/");
         }
       })
       .catch((error) => {
@@ -170,26 +189,28 @@ function useProvideAuth() {
       });
   };
 
-  const signInWithGithub = async () => {
+  const credentialWithGithub = async () => {
     setLoading(true);
+    setSubmit(true);
     const auth = getAuth();
     return signInWithPopup(auth, new GithubAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
-        router.push("/");
-        const res = await fetcherSignUp(
-          `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
-          user.name,
-          "",
-          ""
-        );
-        if (res == "Request failed with status code 401") {
-          handleUser(false);
+        const res = await fetcherCredential3rdParty();
+
+        if(res.status == 401) {
+          signout();
+          setLoading(false);
+          setSubmit(false);
+
           router.push("/");
-          setLoading(false);
         } else {
+          localStorage.setItem("Authorization", res.data.message);
+
           setLoading(false);
-          localStorage.setItem("Authorization", res.data.token);
+          setSubmit(false);
+
+          router.push("/");
         }
       })
       .catch((error) => {
@@ -203,7 +224,13 @@ function useProvideAuth() {
       });
   };
 
-  const signInWithFacebook = async () => {
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    const auth = getAuth();
+    return signInWithPopUp(auth, new GithubAuthProvider());
+  };
+
+  const signUpWithFacebook = async () => {
     const auth = getAuth();
     return signInWithPopup(auth, new FacebookAuthProvider())
       .then(async (userCredential) => {
@@ -269,10 +296,9 @@ function useProvideAuth() {
     isSubmit,
     classicSignIn,
     classicSignUp,
+    credentialWithGoogle,
+    credentialWithGithub,
     signout,
-    signInWithFacebook,
-    signInWithGoogle,
-    signInWithGithub,
   };
 }
 

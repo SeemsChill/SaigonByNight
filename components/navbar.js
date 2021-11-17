@@ -49,7 +49,7 @@ const Navbar = () => {
           <ThemeToggle />
           {user ? (
             <>
-              <NextLink href={`/user/${user.name}`}>
+              <NextLink href={`/user/${user.uid}`}>
                 <Button
                   bg={colorMode == "light" ? "black" : "white"}
                   color={colorMode == "light" ? "white" : "black"}

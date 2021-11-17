@@ -1,10 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const fetcherSignUp = async (url, name, email, password) => {
+const fetcherSignUp = async (name, email, password) => {
   const data = await axios
     .post(
-      `${url}`,
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
       {
         username: `${name}`,
         email: `${email}`,
@@ -20,27 +20,54 @@ const fetcherSignUp = async (url, name, email, password) => {
     )
     .then()
     .catch((err) => {
-      return err.message;
+      return err.response;
     });
 
   return data;
 };
 
-const fetcherSignIn = async (url, password) => {
-  const data = await axios.post(
-    `${url}`,
-    {
-      password: `${password}`,
-      csrf: `${Cookies.get("csrftoken")}`,
-      sbnSessionId: `${Cookies.get("sbn-session-id")}`,
-    },
-    {
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      credentials: "include",
-    }
-  );
+const fetcherSignIn = async (password) => {
+  const data = await axios
+    .post(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/`,
+      {
+        password: `${password}`,
+        csrf: `${Cookies.get("csrftoken")}`,
+        sbnSessionId: `${Cookies.get("sbn-session-id")}`,
+      },
+      {
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        credentials: "include",
+      }
+    )
+    .then()
+    .catch((err) => {
+      return err.response;
+    });
+  return data;
+};
+
+const fetcherCredential3rdParty = async () => {
+  const data = await axios
+    .post(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/credential/`,
+      {
+        csrf: `${Cookies.get("csrftoken")}`,
+        sbnSessionId: `${Cookies.get("sbn-session-id")}`,
+      },
+      {
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        credentials: "include",
+      }
+    )
+    .then()
+    .catch((err) => {
+      return err.response;
+    });
   return data;
 };
 
@@ -89,4 +116,10 @@ const fetcherVerification = async (url, code) => {
   return data.data;
 };
 
-export { fetcherForgot, fetcherSignIn, fetcherSignUp, fetcherVerification };
+export {
+  fetcherCredential3rdParty,
+  fetcherForgot,
+  fetcherSignIn,
+  fetcherSignUp,
+  fetcherVerification,
+};

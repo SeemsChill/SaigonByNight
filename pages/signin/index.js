@@ -17,7 +17,7 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { FaGoogle, FaGithub, FaFacebook } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
 import Loading from "@/components/loading";
@@ -28,12 +28,11 @@ const SignIn = () => {
   const {
     user,
     classicSignIn,
+    credentialWithGoogle,
+    credentialWithGithub,
     error,
     isFetching,
     isSubmit,
-    signInWithFacebook,
-    signInWithGoogle,
-    signInWithGithub,
   } = useAuth();
   const {
     handleSubmit,
@@ -200,23 +199,16 @@ const SignIn = () => {
                 <Button
                   bg={colorMode == "light" ? "white" : "#e73727"}
                   leftIcon={<FaGoogle />}
-                  onClick={signInWithGoogle}
+                  onClick={credentialWithGoogle}
                 >
                   Google
                 </Button>
                 <Button
                   bg={colorMode == "light" ? "white" : "black"}
                   leftIcon={<FaGithub />}
-                  onClick={signInWithGithub}
+                  onClick={credentialWithGithub}
                 >
                   Github
-                </Button>
-                <Button
-                  colorScheme="facebook"
-                  leftIcon={<FaFacebook />}
-                  onClick={signInWithFacebook}
-                >
-                  Facebook
                 </Button>
               </HStack>
             </Box>
