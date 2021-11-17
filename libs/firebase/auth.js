@@ -278,7 +278,6 @@ function useProvideAuth() {
         `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
         {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         }
       );
       Cookies.set("csrftoken", data.headers["x-csrftoken"], {
