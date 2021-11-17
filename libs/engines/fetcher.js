@@ -1,14 +1,15 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const fetcherSignUp = async (name, email, password) => {
+const fetcherSignUp = async (uid, name, email, password) => {
   const data = await axios
     .post(
       `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/register/user/`,
       {
-        username: `${name}`,
-        email: `${email}`,
-        password: `${password}`,
+        uid: uid,
+        username: name,
+        email: email,
+        password: password,
         csrf: `${Cookies.get("csrftoken")}`,
         sbnSessionId: `${Cookies.get("sbn-session-id")}`,
       },
@@ -31,7 +32,7 @@ const fetcherSignIn = async (password) => {
     .post(
       `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/`,
       {
-        password: `${password}`,
+        password: password,
         csrf: `${Cookies.get("csrftoken")}`,
         sbnSessionId: `${Cookies.get("sbn-session-id")}`,
       },
@@ -49,11 +50,12 @@ const fetcherSignIn = async (password) => {
   return data;
 };
 
-const fetcherCredential3rdParty = async () => {
+const fetcherCredential3rdParty = async (uid) => {
   const data = await axios
     .post(
       `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/login/credential/`,
       {
+        uid: uid,
         csrf: `${Cookies.get("csrftoken")}`,
         sbnSessionId: `${Cookies.get("sbn-session-id")}`,
       },
@@ -71,12 +73,13 @@ const fetcherCredential3rdParty = async () => {
   return data;
 };
 
-const fetcherForgot = async (url, email) => {
+const fetcherForgot = async (email, isChecked) => {
   const data = await axios
     .post(
-      `${url}`,
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/forgot/`,
       {
         email: `${email}`,
+        isChecked: isChecked,
         csrf: `${Cookies.get("csrftoken")}`,
       },
       {
@@ -93,13 +96,13 @@ const fetcherForgot = async (url, email) => {
   return data.status;
 };
 
-const fetcherVerification = async (url, code) => {
-  console.log(Cookies.get("csrftoken"));
+const fetcherVerification = async (code) => {
   const data = await axios
     .post(
-      `${url}`,
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/verification/`,
       {
         code: code,
+        csrf: `${Cookies.get("csrftoken")}`,
       },
       {
         headers: new Headers({
@@ -110,10 +113,9 @@ const fetcherVerification = async (url, code) => {
     )
     .then()
     .catch((error) => {
-      return error.response;
+      return error;
     });
-
-  return data.data;
+  return data;
 };
 
 export {

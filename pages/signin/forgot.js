@@ -5,6 +5,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  Checkbox,
   Container,
   FormControl,
   FormErrorMessage,
@@ -27,10 +28,8 @@ const Forgot = () => {
   } = useForm();
 
   async function onSubmit(values) {
-    const res = await fetcherForgot(
-      "http://localhost:8000/api/post/forgot/",
-      values.email
-    );
+    console.log(values);
+    const res = await fetcherForgot(values.email, values.isChecked);
     if (res == 404) {
       setSuccess("");
       setError("User not found.");
@@ -60,15 +59,10 @@ const Forgot = () => {
         display="flex"
         maxW="container.lg"
         position="relative"
-        pt={"8rem"}
+        pt={"4rem"}
         justifyContent="center"
       >
-        <Box
-          as="div"
-          width={{ base: "20em", md: "30em" }}
-          h="32em"
-          position="relative"
-        >
+        <Box as="div" width={{ base: "20em", md: "30em" }} position="relative">
           {success && (
             <Alert
               status="success"
@@ -131,6 +125,17 @@ const Forgot = () => {
                 {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
+            <FormControl mt={4} id="isChecked">
+              <Heading as="h2" size="md" w="90%">
+                With generating secured password?
+              </Heading>
+              <Checkbox
+                mt={4}
+                {...register("isChecked", {})}
+                size="lg"
+                iconColor="black"
+              />
+            </FormControl>
             <Button
               mt={4}
               bg={useColorModeValue("black", "white")}
@@ -142,6 +147,9 @@ const Forgot = () => {
               Submit
             </Button>
           </form>
+          <Heading as="h2" size="md" w="90%" mt="6rem">
+            (このフォームは、パスワードを取り戻すために使用されます)
+          </Heading>
         </Box>
       </Container>
     </Layout>

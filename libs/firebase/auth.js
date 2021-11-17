@@ -36,6 +36,7 @@ const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [afterFetchingCsrf, setFetchingCsrf] = useState(false);
   const [isFetching, setFetching] = useState(true);
   const [error, setError] = useState("");
   const [isSubmit, setSubmit] = useState(false);
@@ -79,14 +80,30 @@ function useProvideAuth() {
         handleUser(userCredential.user);
         updateProfile(auth.currentUser, { displayName: `${username}` }).then(
           async () => {
-            const res = await fetcherSignUp(username, email, hashedPass);
+            const res = await fetcherSignUp(
+              auth.currentUser.uid,
+              username,
+              email,
+              hashedPass
+            );
 
             if (res.status == 401) {
               signout();
+
               setLoading(false);
               setSubmit(false);
 
               router.push("/");
+            } else if (res.status == 400) {
+              signout();
+
+              setLoading(false);
+              setSubmit(false);
+
+              setError("Bad connection, please signup again.");
+              setTimeout(() => {
+                setError("");
+              }, 3000);
             } else {
               localStorage.setItem("Authorization", res.data.message);
 
@@ -112,8 +129,10 @@ function useProvideAuth() {
 
   const classicSignIn = async (email, password) => {
     setLoading(true);
-    const auth = getAuth();
     setSubmit(true);
+
+    const auth = getAuth();
+
     const hashedPass = sha256(password);
     return signInWithEmailAndPassword(auth, email, hashedPass)
       .then(async (userCredential) => {
@@ -157,11 +176,13 @@ function useProvideAuth() {
   const credentialWithGoogle = async () => {
     setLoading(true);
     setSubmit(true);
+
     const auth = getAuth();
+
     return signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
-        const res = await fetcherCredential3rdParty();
+        const res = await fetcherCredential3rdParty(auth.currentUser.uid);
 
         if (res.status == 401) {
           signout();
@@ -169,6 +190,16 @@ function useProvideAuth() {
           setSubmit(false);
 
           router.push("/");
+        } else if (res.status == 400) {
+          signout();
+
+          setLoading(false);
+          setSubmit(false);
+
+          setError("Bad connection, please signup again.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
         } else {
           localStorage.setItem("Authorization", res.data.message);
 
@@ -196,7 +227,7 @@ function useProvideAuth() {
     return signInWithPopup(auth, new GithubAuthProvider())
       .then(async (userCredential) => {
         handleUser(userCredential.user);
-        const res = await fetcherCredential3rdParty();
+        const res = await fetcherCredential3rdParty(auth.currentUser.uid);
 
         if (res.status == 401) {
           signout();
@@ -204,6 +235,16 @@ function useProvideAuth() {
           setSubmit(false);
 
           router.push("/");
+        } else if (res.status == 400) {
+          signout();
+
+          setLoading(false);
+          setSubmit(false);
+
+          setError("Bad connection, please signup again.");
+          setTimeout(() => {
+            setError("");
+          }, 3000);
         } else {
           localStorage.setItem("Authorization", res.data.message);
 
@@ -284,6 +325,7 @@ function useProvideAuth() {
         secure: true,
         sameSite: "none",
       });
+      setFetchingCsrf(true);
     }
     fetchCsrf();
   }, []);
@@ -294,6 +336,7 @@ function useProvideAuth() {
     isFetching,
     isLoading,
     isSubmit,
+    afterFetchingCsrf,
     classicSignIn,
     classicSignUp,
     credentialWithGoogle,

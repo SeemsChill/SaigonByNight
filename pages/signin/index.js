@@ -156,8 +156,8 @@ const SignIn = () => {
                 <Button
                   mt={4}
                   isLoading={isSubmit}
-                  bg={"black"}
-                  color={"white"}
+                  bg={colorMode == "light" ? "black" : "white"}
+                  color={colorMode == "light" ? "white" : "black"}
                   transition="all 400ms ease-in-out"
                   type="submit"
                   _hover={{ transform: "scale(1.1)" }}

@@ -1,22 +1,36 @@
-import React from "react";
-import { Heading } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import Layout from "@/components/layouts/format";
+import Loading from "@/components/loading";
 import { fetcherVerification } from "@/libs/engines/fetcher";
+import { useAuth } from "@/libs/firebase/auth";
 
-const url = `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/verification/`;
+const Verify = () => {
+  const [isFetching, setFetching] = useState(true);
+  const router = useRouter();
+  const { afterFetchingCsrf } = useAuth();
 
-export async function getServerSideProps(context) {
-  const { code } = context.query;
-  const data = await fetcherVerification(url, code);
+  async function fetchingVerification() {
+    const { code } = router.query;
+    const res = await fetcherVerification(code);
+    console.log(res);
 
-  return { props: { data } };
-}
+    setFetching(false);
+  }
 
-const Verify = ({ data }) => {
-  console.log(data);
+  if (afterFetchingCsrf) {
+    fetchingVerification();
+  }
 
   return (
     <>
-      <Heading>Veriy page</Heading>
+      {isFetching ? (
+        <Layout title="Verify page">
+          <Loading />
+        </Layout>
+      ) : (
+        <Layout title="Verify page"></Layout>
+      )}
     </>
   );
 };
