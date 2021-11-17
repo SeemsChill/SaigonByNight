@@ -23,7 +23,6 @@ import {
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
 const authContext = createContext();
 const AuthProvider = ({ children }) => {
@@ -277,7 +276,10 @@ function useProvideAuth() {
     async function fetchCsrf() {
       const data = await axios.get(
         `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/csrf/`,
-        {}
+        {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        }
       );
       Cookies.set("csrftoken", data.headers["x-csrftoken"], {
         secure: true,
