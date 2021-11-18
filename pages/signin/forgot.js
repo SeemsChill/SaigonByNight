@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Layout from "@/components/layouts/format";
-import { fetcherForgot } from "@/libs/engines/fetcher";
+import { fetcherResetRequest } from "@/libs/engines/fetcher";
 
 const Forgot = () => {
   const [error, setError] = useState("");
@@ -29,7 +29,7 @@ const Forgot = () => {
 
   async function onSubmit(values) {
     console.log(values);
-    const res = await fetcherForgot(values.email, values.isChecked);
+    const res = await fetcherResetRequest(values.email, values.isChecked);
     if (res == 404) {
       setSuccess("");
       setError("User not found.");
