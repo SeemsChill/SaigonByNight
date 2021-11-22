@@ -63,18 +63,14 @@ function useProvideAuth() {
     return false;
   };
 
-  const classicSignUp = async (username, email, password, confirmPassword) => {
-    setLoading(true);
+  const classicSignUp = async (username, email, password) => {
     const auth = getAuth();
-    if (password != confirmPassword) {
-      setError("Passwords do not match");
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-      return;
-    }
+
+    setLoading(true);
     setSubmit(true);
+
     const hashedPass = sha256(password);
+
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
         handleUser(userCredential.user);

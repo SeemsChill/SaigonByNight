@@ -73,50 +73,23 @@ const fetcherCredential3rdParty = async (uid) => {
   return data;
 };
 
-const fetcherResetRequest = async (email, isChecked) => {
+const fetcherResetVerification = async (code) => {
   const data = await axios
-    .post(
-      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/reset/`,
-      {
-        email: `${email}`,
-        isChecked: isChecked,
-        csrf: `${Cookies.get("csrftoken")}`,
+    .get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/reset/verification/`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${code}`,
       },
-      {
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        credentials: "include",
-      }
-    )
+    })
     .then()
     .catch((error) => {
       return error.response;
-    });
-  return data.status;
-};
-
-const fetcherResetVerification = async (code) => {
-  const data = await axios
-    .get(
-      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/reset/verification/`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${code}`,
-        },
-      }
-    )
-    .then()
-    .catch((error) => {
-      return error;
     });
   return data.data;
 };
 
 export {
   fetcherCredential3rdParty,
-  fetcherResetRequest,
   fetcherSignIn,
   fetcherSignUp,
   fetcherResetVerification,

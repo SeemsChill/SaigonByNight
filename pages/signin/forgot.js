@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   AlertTitle,
   Box,
   Button,
+  Center,
   Checkbox,
-  Container,
+  CloseButton,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -16,142 +19,160 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Layout from "@/components/layouts/format";
-import { fetcherResetRequest } from "@/libs/engines/fetcher";
+import { onResetRequestSubmit } from "@/libs/engines/resetEngine";
 
 const Forgot = () => {
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [statusCode, setStatusCode] = useState(0);
+
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
 
-  async function onSubmit(values) {
-    console.log(values);
-    const res = await fetcherResetRequest(values.email, values.isChecked);
-    if (res == 404) {
-      setSuccess("");
-      setError("User not found.");
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-    } else if (res == 202) {
-      setSuccess("");
-      setError(
-        "This email is using with other credential (google, github, ...)."
+  async function onResetRequest({ email, isChecked }) {
+    setLoading(true);
+
+    const res = await onResetRequestSubmit(email, isChecked);
+
+    setStatusCode(res.status);
+
+    if (res.status == 201) {
+      setMessage(
+        "If the account existed, we've sent password reset instruction linked with the account."
       );
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-    } else {
-      setError("");
-      setSuccess("Email has been sent. Please check it.");
-      setTimeout(() => {
-        setSuccess("");
-      }, 3000);
+    } else if (res.status == 202) {
+      setMessage(
+        "The email links with this account is created with other platform."
+      );
+    } else if (res.status == 401) {
+      router.push("/signin");
+    } else if (res.status == 404) {
+      setMessage(
+        "Email address is either invalid or still not associated with any personal account."
+      );
     }
+
+    setLoading(false);
+  }
+
+  function onCloseAlert(e) {
+    e.preventDefault();
+
+    setMessage("");
+    setStatusCode(0);
   }
 
   return (
     <Layout title="Forgot password">
-      <Container
-        display="flex"
-        maxW="container.lg"
-        position="relative"
-        pt={"4rem"}
-        justifyContent="center"
-      >
-        <Box as="div" width={{ base: "20em", md: "30em" }} position="relative">
-          {success && (
+      <Center display="flex" h="70vh" justifyContent="center" pt="3rem">
+        <Box as="div" p="2rem" w="container.sm">
+          {message && statusCode && (
             <Alert
-              status="success"
-              w={"50%"}
-              borderRadius={"40px"}
-              position="absolute"
-              transform={"translateY(-2rem)"}
-              bg={"green"}
-              color={"white"}
+              alignItems="center"
+              borderRadius="10px"
+              flexDirection="column"
+              h={{ base: "11em", md: "9.375em" }}
+              justifyContent="center"
+              mt={{ base: "10em", md: "0em" }}
+              status={statusCode == 201 ? "success" : "warning"}
+              textAlign="center"
+              variant="subtle"
             >
-              <AlertIcon color={"white"} />
-              <AlertTitle mr={2}>{success}</AlertTitle>
-            </Alert>
-          )}
-          {error && (
-            <Alert
-              status="error"
-              w={"90%"}
-              borderRadius={"40px"}
-              bg={"white"}
-              color={"black"}
-              position="absolute"
-              transform={"translateY(-2rem)"}
-            >
-              <AlertIcon color={"black"} />
-              <AlertTitle mr={2}>{error}</AlertTitle>
-            </Alert>
-          )}
-          <Heading>Retrieve password</Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl
-              id="forgot-password-email"
-              isInvalid={errors.email}
-              mt={4}
-            >
-              <FormLabel mt={4}>email:</FormLabel>
-              <Input
-                w="90%"
-                transition="all 300ms ease-in-out"
-                _hover={{ transform: "scale(1.1)" }}
-                placeholder="君のEメール"
-                {...register("email", {
-                  required: "This field is required.",
-                  pattern: {
-                    value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
-                    message:
-                      "Invalid email address (allow only alphabets, numbers, [_, -]).",
-                  },
-                  minLength: {
-                    value: 8,
-                    message: "Minimum email characters length is 8.",
-                  },
-                  maxLength: {
-                    value: 40,
-                    message: "Maximum email characters length is 40.",
-                  },
-                })}
+              <AlertIcon boxSize="40px" mr={0} />
+              <AlertTitle fontSize="lg" mb={1} mt={4}>
+                {statusCode == 404
+                  ? "Email not found."
+                  : statusCode == 201
+                  ? "Email has been sent."
+                  : ""}
+              </AlertTitle>
+              <AlertDescription maxW="sm">{message}</AlertDescription>
+              <CloseButton
+                position="absolute"
+                right="4.6875em"
+                top="1.4em"
+                onClick={onCloseAlert}
               />
-              <FormErrorMessage>
-                {errors.email && errors.email.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl mt={4} id="isChecked">
-              <Heading as="h2" size="md" w="90%">
-                With generating secured password?
-              </Heading>
-              <Checkbox
+            </Alert>
+          )}
+          <Box
+            as="div"
+            border={`10px solid ${useColorModeValue("black", "white")}`}
+            borderRadius="10px"
+            mt="1rem"
+            p="1rem"
+          >
+            <Heading>Retrieve password</Heading>
+            <form onSubmit={handleSubmit(onResetRequest)}>
+              <FormControl
+                id="forgot-password-email"
+                isInvalid={errors.email}
                 mt={4}
-                {...register("isChecked", {})}
-                size="lg"
-                iconColor="black"
-              />
-            </FormControl>
-            <Button
-              mt={4}
-              bg={useColorModeValue("black", "white")}
-              color={useColorModeValue("white", "black")}
-              transition="all 400ms ease-in-out"
-              type="submit"
-              _hover={{ transform: "scale(1.1)" }}
-            >
-              Submit
-            </Button>
-          </form>
-          <Heading as="h2" size="md" w="90%" mt="6rem">
-            (このフォームは、パスワードを取り戻すために使用されます)
-          </Heading>
+              >
+                <FormLabel mt={4}>email:</FormLabel>
+                <Input
+                  placeholder="君のEメール"
+                  {...register("email", {
+                    required: "This field is required.",
+                    pattern: {
+                      value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                      message:
+                        "Invalid email address (allow only alphabets, numbers, [_, -]).",
+                    },
+                    minLength: {
+                      value: 8,
+                      message: "Minimum email characters length is 8.",
+                    },
+                    maxLength: {
+                      value: 40,
+                      message: "Maximum email characters length is 40.",
+                    },
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.email && errors.email.message}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl mt={4} id="isChecked">
+                <Box
+                  as="div"
+                  display={{ base: "block", md: "flex" }}
+                  alignItems="center"
+                >
+                  <Heading as="h2" mr="1rem" size="sm">
+                    With generating secured password?
+                  </Heading>
+                  <Checkbox
+                    bg={useColorModeValue("black", "white")}
+                    mt={{ base: 4, md: 0 }}
+                    {...register("isChecked", {})}
+                    size="lg"
+                    iconColor="black"
+                  />
+                </Box>
+              </FormControl>
+              <Button
+                bg={useColorModeValue("black", "white")}
+                _hover={{ transform: "scale(1.1)" }}
+                color={useColorModeValue("white", "black")}
+                isLoading={loading}
+                mt={4}
+                transition="all 400ms ease-in-out"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </form>
+            <Heading as="h2" mt="1rem" size="md">
+              (このフォームは、パスワードを取り戻すために使用されます)
+            </Heading>
+          </Box>
         </Box>
-      </Container>
+      </Center>
     </Layout>
   );
 };

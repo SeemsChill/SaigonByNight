@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -14,9 +14,12 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  InputGroup,
+  InputRightElement,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
@@ -25,6 +28,8 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
 const SignIn = () => {
+  const [show, setShow] = useState("");
+
   const {
     user,
     classicSignIn,
@@ -44,6 +49,10 @@ const SignIn = () => {
 
   function onSubmit(values) {
     classicSignIn(values.email, values.password);
+  }
+
+  function handleShow() {
+    setShow(!show);
   }
 
   if (user) {
@@ -95,10 +104,8 @@ const SignIn = () => {
                 <FormControl id="signin-email" isInvalid={errors.email} mt={4}>
                   <FormLabel mt={4}>email:</FormLabel>
                   <Input
-                    w="90%"
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
                     placeholder="君のEメール"
+                    w="90%"
                     {...register("email", {
                       required: "Required",
                       pattern: {
@@ -126,29 +133,35 @@ const SignIn = () => {
                   mt={4}
                 >
                   <FormLabel mt={4}>password:</FormLabel>
-                  <Input
-                    w="90%"
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
-                    placeholder="君のパスワード"
-                    type="password"
-                    {...register("password", {
-                      required: "Required",
-                      pattern: {
-                        value: /^[A-Z0-9@_]{2,}$/i,
-                        message:
-                          "Invalid password key syntaxs (allow only alphabets, numbers, [@, _]).",
-                      },
-                      minLength: {
-                        value: 8,
-                        message: "Mimimum password characters length is 8.",
-                      },
-                      maxLength: {
-                        value: 40,
-                        message: "Maximum password characters length is 40.",
-                      },
-                    })}
-                  />
+                  <InputGroup size="md">
+                    <Input
+                      placeholder="君のパスワード"
+                      pr="4.5rem"
+                      type={show ? "text" : "password"}
+                      w="90%"
+                      {...register("password", {
+                        required: "Required",
+                        pattern: {
+                          value: /^[A-Z0-9@_]{2,}$/i,
+                          message:
+                            "Invalid password key syntaxs (allow only alphabets, numbers, [@, _]).",
+                        },
+                        minLength: {
+                          value: 8,
+                          message: "Mimimum password characters length is 8.",
+                        },
+                        maxLength: {
+                          value: 40,
+                          message: "Maximum password characters length is 40.",
+                        },
+                      })}
+                    />
+                    <InputRightElement w={{ base: "7.5rem", md: "9.5rem" }}>
+                      <Button h="1.75rem" size="sm" onClick={handleShow}>
+                        {show ? <AiFillEye /> : <AiFillEyeInvisible />}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                   <FormErrorMessage>
                     {errors.password && errors.password.message}
                   </FormErrorMessage>

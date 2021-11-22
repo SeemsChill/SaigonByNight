@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -9,35 +9,48 @@ import {
   Button,
   Container,
   Heading,
+  Input,
+  InputGroup,
+  InputRightElement,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Layout from "@/components/layouts/format";
 import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/libs/firebase/auth";
 
 const SignUp = () => {
+  const [show, setShow] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
+    formState: { errors },
     handleSubmit,
     register,
-    formState: { errors },
+    watch,
   } = useForm();
   const { user, isFetching, classicSignUp, error, isSubmit } = useAuth();
   const router = useRouter();
   const { colorMode } = useColorMode();
 
+  const password = useRef({});
+  password.current = watch("password", "");
+
   function onSubmit(values) {
-    classicSignUp(
-      values.username,
-      values.email,
-      values.password,
-      values.confirm
-    );
+    classicSignUp(values.username, values.email, values.password);
+  }
+
+  function handleShow() {
+    setShow(!show);
+  }
+
+  function handleConfirmShow() {
+    setShowConfirmPassword(!showConfirmPassword);
   }
 
   if (user) {
@@ -93,10 +106,8 @@ const SignUp = () => {
                 >
                   <FormLabel mt={4}>username:</FormLabel>
                   <Input
-                    w="90%"
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
                     placeholder="君のユーザー名"
+                    w="90%"
                     {...register("username", {
                       required: "This is required",
                       pattern: {
@@ -119,13 +130,10 @@ const SignUp = () => {
                   </FormErrorMessage>
                 </FormControl>
                 <FormControl id="signup-email" isInvalid={errors.email} mt={4}>
-                  <FormLabel>email:</FormLabel>
+                  <FormLabel mt={4}>email:</FormLabel>
                   <Input
+                    placeholder="君のEメール"
                     w={"90%"}
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
-                    placeholder="君の
-  Eメール"
                     {...register("email", {
                       required: "This is required",
                       pattern: {
@@ -153,28 +161,34 @@ const SignUp = () => {
                   mt={4}
                 >
                   <FormLabel mt={4}>password:</FormLabel>
-                  <Input
-                    type="password"
-                    w={"90%"}
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
-                    placeholder="君のパスワード"
-                    {...register("password", {
-                      required: "You must specify a password.",
-                      pattern: {
-                        value: /^[A-Z0-9@_]{2,}$/i,
-                        message: "Allow only alphabet, number, [@, _].",
-                      },
-                      minLength: {
-                        value: 8,
-                        message: "Password must have at least 8 characters.",
-                      },
-                      maxLength: {
-                        value: 40,
-                        message: "Maximum password characters length is 40.",
-                      },
-                    })}
-                  />
+                  <InputGroup size="md">
+                    <Input
+                      placeholder="君のパスワード"
+                      pr="4.5rem"
+                      type={show ? "text" : "password"}
+                      w={"90%"}
+                      {...register("password", {
+                        required: "You must specify a password.",
+                        pattern: {
+                          value: /^[A-Z0-9@_]{2,}$/i,
+                          message: "Allow only alphabet, number, [@, _].",
+                        },
+                        minLength: {
+                          value: 8,
+                          message: "Password must have at least 8 characters.",
+                        },
+                        maxLength: {
+                          value: 40,
+                          message: "Maximum password characters length is 40.",
+                        },
+                      })}
+                    />
+                    <InputRightElement w={{ base: "7.5rem", md: "9.5rem" }}>
+                      <Button h="1.75rem" size="sm" onClick={handleShow}>
+                        {show ? <AiFillEye /> : <AiFillEyeInvisible />}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                   <FormErrorMessage>
                     {errors.password && errors.password.messsage}
                   </FormErrorMessage>
@@ -185,28 +199,41 @@ const SignUp = () => {
                   mt={4}
                 >
                   <FormLabel mt={4}>confirm password:</FormLabel>
-                  <Input
-                    w={"90%"}
-                    transition="all 300ms ease-in-out"
-                    _hover={{ transform: "scale(1.1)" }}
-                    placeholder="パスワードを認証する, お願い."
-                    type="password"
-                    {...register("confirm", {
-                      required: "You must specify the password again.",
-                      pattern: {
-                        value: /^[A-Z0-9_-]{2,}$/i,
-                        message: "Allow only alphabet, number, [@, _].",
-                      },
-                      minLength: {
-                        value: 8,
-                        message: "Password must have at least 8 characters.",
-                      },
-                      maxLength: {
-                        value: 40,
-                        message: "Maxmimum password characters length is 40.",
-                      },
-                    })}
-                  />
+                  <InputGroup size="md">
+                    <Input
+                      placeholder="パスワードを認証する, お願い."
+                      pr="4.5rem"
+                      type={showConfirmPassword ? "text" : "password"}
+                      w={"90%"}
+                      {...register("confirm", {
+                        required: "You must specify the password again.",
+                        pattern: {
+                          value: /^[A-Z0-9_-]{2,}$/i,
+                          message: "Allow only alphabet, number, [@, _].",
+                        },
+                        minLength: {
+                          value: 8,
+                          message: "Password must have at least 8 characters.",
+                        },
+                        maxLength: {
+                          value: 40,
+                          message: "Maxmimum password characters length is 40.",
+                        },
+                        validate: (value) =>
+                          value === password.current ||
+                          "The passwords do not match.",
+                      })}
+                    />
+                    <InputRightElement w={{ base: "7.5rem", md: "9.5rem" }}>
+                      <Button h="1.75rem" size="sm" onClick={handleConfirmShow}>
+                        {showConfirmPassword ? (
+                          <AiFillEye />
+                        ) : (
+                          <AiFillEyeInvisible />
+                        )}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                   <FormErrorMessage>
                     {errors.confirm && errors.confirm.message}
                   </FormErrorMessage>
