@@ -139,7 +139,7 @@ const SignUp = () => {
                     {...register("email", {
                       required: "This is required",
                       pattern: {
-                        value: /^[A-Z0-9_-]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                        value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,4}$/,
                         message:
                           "Invalid email (allow only alphabet, number, [_, -]).",
                       },

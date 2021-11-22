@@ -109,7 +109,7 @@ const SignIn = () => {
                     {...register("email", {
                       required: "Required",
                       pattern: {
-                        value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                        value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,4}$/,
                         message:
                           "Invalid email address (allow only alphabets, numbers, [_, -]).",
                       },

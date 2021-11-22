@@ -119,7 +119,7 @@ const Forgot = () => {
                   {...register("email", {
                     required: "This field is required.",
                     pattern: {
-                      value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,}$/i,
+                      value: /^[A-Z0-9-_]+@[A-Z0-9]+\.[A-Z]{2,4}$/,
                       message:
                         "Invalid email address (allow only alphabets, numbers, [_, -]).",
                     },
