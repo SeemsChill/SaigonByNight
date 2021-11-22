@@ -70,6 +70,10 @@ const Verify = ({ code, res }) => {
       setMessage(
         `Password has been reset, ${res.data.name}. Automatically return to login page.`
       );
+
+      setTimeout(() => {
+        router.push("/signin");
+      }, 3000);
     } else if (res.status == 410) {
       router.push("/signin");
     } else {

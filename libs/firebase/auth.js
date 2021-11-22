@@ -105,8 +105,6 @@ function useProvideAuth() {
 
               setLoading(false);
               setSubmit(false);
-
-              router.push("/");
             }
           }
         );

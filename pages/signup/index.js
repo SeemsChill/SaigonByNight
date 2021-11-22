@@ -7,6 +7,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  CloseButton,
   Container,
   Heading,
   Input,
@@ -95,6 +96,7 @@ const SignUp = () => {
                 >
                   <AlertIcon color={"black"} />
                   <AlertTitle mr={2}>{error}</AlertTitle>
+                  <CloseButton></CloseButton>
                 </Alert>
               )}
               <Heading>Sign up</Heading>
