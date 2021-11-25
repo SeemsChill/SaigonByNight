@@ -53,8 +53,9 @@ function useProvideAuth() {
 
       return user;
     }
+
     Cookies.remove("sbn-session-id");
-    localStorage.removeItem("Authorization");
+    Cookies.remove("Authorization");
 
     setUser(false);
     setLoading(false);
@@ -101,7 +102,7 @@ function useProvideAuth() {
                 setError("");
               }, 3000);
             } else {
-              localStorage.setItem("Authorization", res.data.message);
+              Cookies.set("Authorization", res.data.message);
 
               setLoading(false);
               setSubmit(false);
@@ -140,7 +141,7 @@ function useProvideAuth() {
 
           router.push("/");
         } else {
-          localStorage.setItem("Authorization", res.data.message);
+          Cookies.set("Authorization", res.data.message);
 
           setLoading(false);
           setSubmit(false);
@@ -195,7 +196,7 @@ function useProvideAuth() {
             setError("");
           }, 3000);
         } else {
-          localStorage.setItem("Authorization", res.data.message);
+          Cookies.set("Authorization", res.data.message);
 
           setLoading(false);
           setSubmit(false);
@@ -240,7 +241,7 @@ function useProvideAuth() {
             setError("");
           }, 3000);
         } else {
-          localStorage.setItem("Authorization", res.data.message);
+          Cookies.set("Authorization", res.data.message);
 
           setLoading(false);
           setSubmit(false);
@@ -296,6 +297,7 @@ function useProvideAuth() {
 
   const signout = () => {
     const auth = getAuth();
+    router.push("/");
     return signOut(auth).then(() => handleUser(false));
   };
 
