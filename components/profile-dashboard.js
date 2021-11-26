@@ -5,7 +5,17 @@ import ProfileModal from "@/components/profile";
 import EditProfileModal from "@/components/edit-profile";
 import CreateProductModal from "@/components/create-product-modal";
 
-export default function ProfileDashboard({ name, url }) {
+export default function ProfileDashboard({
+  username,
+  email,
+  real_name,
+  province,
+  district,
+  ward,
+  url,
+  phoneNumber,
+  detailAddress,
+}) {
   const { colorMode } = useColorMode();
 
   return (
@@ -19,18 +29,22 @@ export default function ProfileDashboard({ name, url }) {
       w="20rem"
       p="2rem"
     >
-      <Box
-        border={`5px solid ${colorMode == "light" ? "#18181d" : "#dcc9b0"}`}
-        h={200}
-        w={200}
-      >
-        <Image
-          priority
-          alt={`${name} avatar`}
-          src={url}
-          width={200}
-          height={200}
-        />
+      <Box as="div" display="flex" justifyContent="center" w="100%">
+        <Box
+          border={`5px solid ${colorMode == "light" ? "#18181d" : "#dcc9b0"}`}
+          borderRadius="50%"
+          overflow="hidden"
+          h={200}
+          w={200}
+        >
+          <Image
+            priority
+            alt={`${username} avatar`}
+            src={url}
+            width={200}
+            height={200}
+          />
+        </Box>
       </Box>
       <Heading
         mt="2rem"
@@ -40,11 +54,27 @@ export default function ProfileDashboard({ name, url }) {
         }`}
         textAlign="center"
       >
-        {name}
+        {username}
       </Heading>
       <Flex mt="1rem" justifyContent="center">
-        <ProfileModal />
-        <EditProfileModal />
+        <ProfileModal
+          username={username}
+          email={email}
+          real_name={real_name}
+          province={province}
+          district={district}
+          ward={ward}
+          phoneNumber={phoneNumber}
+          detailAddress={detailAddress}
+        />
+        <EditProfileModal
+          real_name={real_name}
+          province={province}
+          district={district}
+          ward={ward}
+          phoneNumber={phoneNumber}
+          detailAddress={detailAddress}
+        />
         <CreateProductModal />
       </Flex>
     </Box>

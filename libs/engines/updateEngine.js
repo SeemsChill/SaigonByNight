@@ -6,14 +6,16 @@ export default async function onUpdateInfoSubmit(
   phoneNumber,
   province,
   district,
-  ward
+  ward,
+  detailAddress
 ) {
   const res = await onUpdateInfoFetching(
     realName,
     phoneNumber,
     province,
     district,
-    ward
+    ward,
+    detailAddress
   );
 
   return res;
@@ -24,7 +26,8 @@ async function onUpdateInfoFetching(
   phoneNumber,
   province,
   district,
-  ward
+  ward,
+  detailAddress
 ) {
   const res = await axios
     .post(
@@ -35,6 +38,7 @@ async function onUpdateInfoFetching(
         province: province,
         district: district,
         ward: ward,
+        detailAddress: detailAddress,
         csrf: Cookies.get("csrftoken"),
       },
       {

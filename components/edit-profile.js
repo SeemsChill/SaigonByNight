@@ -13,7 +13,14 @@ import {
 import EditForm from "./edit-form";
 import { AiFillEdit } from "react-icons/ai";
 
-export default function EditProfileModal() {
+export default function EditProfileModal({
+  real_name,
+  province,
+  district,
+  ward,
+  phoneNumber,
+  detailAddress,
+}) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { colorMode } = useColorMode();
 
@@ -36,13 +43,34 @@ export default function EditProfileModal() {
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent w={{ base: "20rem", md: "25rem" }} color="#202023">
-          <ModalHeader bg="#dcc5a7" borderTopRadius="md" fontSize="3xl">
-            Edit your profile?
+        <ModalContent w={{ base: "20rem", md: "30rem" }} color="#202023">
+          <ModalHeader
+            bg={colorMode == "dark" ? "#202023" : "white"}
+            border="4px solid #f0e7db"
+            borderTopRadius="md"
+            color={colorMode == "dark" ? "#f0e7db" : "#202023"}
+            fontSize={{ base: "xl", md: "3xl" }}
+          >
+            {"Edit your profile ?"}
           </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody bg="#f0e7db" borderBottomRadius="lg">
-            <EditForm />
+          <ModalCloseButton
+            color={colorMode == "light" ? "#202023" : "#f0e7db"}
+            top={{ base: "0.9em", md: "1.5em" }}
+            size="lg"
+          />
+          <ModalBody
+            bg={colorMode == "dark" ? "#202023" : "white"}
+            border="4px solid #f0e7db"
+            borderBottomRadius="lg"
+          >
+            <EditForm
+              real_name={real_name}
+              province={province}
+              district={district}
+              ward={ward}
+              phoneNumber={phoneNumber}
+              detailAddress={detailAddress}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

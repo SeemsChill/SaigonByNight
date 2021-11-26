@@ -6,6 +6,7 @@ import Loading from "@/components/loading";
 import ProductDashboard from "@/components/product-dashboard";
 import ProfileDashboard from "@/components/profile-dashboard";
 import { onRequestProductListSubmit } from "@/libs/engines/productEngine";
+import { onFetchingUserProfile } from "@/libs/engines/userEngine";
 import { useAuth } from "@/libs/firebase/auth";
 
 export async function getServerSideProps(context) {
@@ -15,17 +16,18 @@ export async function getServerSideProps(context) {
   const { name } = context.query;
 
   const res = await onRequestProductListSubmit(cookies);
+  const profile = await onFetchingUserProfile(cookies);
 
-  return { props: { name, res } };
+  return { props: { name, res, profile } };
 }
 
-export default function UserProfile({ name, res }) {
+export default function UserProfile({ name, res, profile }) {
   const [afterFetching, setAfterFetching] = useState(false);
 
   const { signout, user } = useAuth();
   const router = useRouter();
 
-  if (user && res && !afterFetching) {
+  if (user && profile && res && !afterFetching) {
     if (name != user.name) {
       router.push(`/user/${user.name}`);
     } else {
@@ -33,8 +35,9 @@ export default function UserProfile({ name, res }) {
     }
   }
 
-  if (res.mess) {
+  if (res.message || profile.message) {
     signout();
+    router.push("/");
     return <></>;
   }
 
@@ -49,7 +52,17 @@ export default function UserProfile({ name, res }) {
             maxW="container.lg"
             mt="2rem"
           >
-            <ProfileDashboard name={user.name} url={user.photoUrl} />
+            <ProfileDashboard
+              username={profile.username}
+              email={profile.email}
+              real_name={profile.real_name}
+              province={profile.province}
+              district={profile.district}
+              ward={profile.ward}
+              url={user.photoUrl}
+              phoneNumber={profile.phone_number}
+              detailAddress={profile.detail_address}
+            />
             <ProductDashboard products={res} />
           </Center>
         </Layout>
