@@ -60,14 +60,56 @@ export async function onCreatingProduct(
   return res;
 }
 
-/*
- {
-      'productName': productName,
-      'productCategory': productCategory,
-      'productImage': formData,
-      'productDescription': productDescription,
-      'productQuantity': productQuantity,
-      'productPrice': productPrice,
-    },
+export async function onUpdatingProduct(
+  productName,
+  productDescription,
+  productQuantity,
+  productPrice,
+  uid
+) {
+  const res = await axios
+    .post(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/update/product/`,
+      {
+        productUid: uid,
+        productName: productName,
+        productDescription: productDescription,
+        productQuantity: productQuantity,
+        productPrice: productPrice,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          csrftoken: Cookies.get("csrftoken"),
+          Authorization: Cookies.get("Authorization"),
+        },
+      }
+    )
+    .catch((err) => {
+      return err.response;
+    });
 
- * */
+  return res;
+}
+
+export async function onDeletingProduct(productUid) {
+  const res = await axios
+    .post(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/post/delete/product/`,
+      {
+        productUid: productUid,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          csrftoken: Cookies.get("csrftoken"),
+          Authorization: Cookies.get("Authorization"),
+        },
+      }
+    )
+    .catch((err) => {
+      return err.respone;
+    });
+
+  return res;
+}

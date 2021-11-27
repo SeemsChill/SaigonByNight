@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, useColorMode } from "@chakra-ui/react";
+import { Box, Center, Grid, Text, useColorMode } from "@chakra-ui/react";
 import Product from "@/components/product";
 
 export default function ProductDashboard({ products }) {
@@ -22,14 +22,20 @@ export default function ProductDashboard({ products }) {
         p="1.5rem"
         w="100%"
       >
-        <Grid
-          gap={6}
-          templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
-        >
-          {productObjects.map(function (product, i) {
-            return <Product key={i} product={product} />;
-          })}
-        </Grid>
+        {JSON.stringify(products) === "{}" ? (
+          <Center h="25rem" w="100%">
+            <Text>Nothing in here yet.</Text>
+          </Center>
+        ) : (
+          <Grid
+            gap={6}
+            templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
+          >
+            {productObjects.map(function (product, i) {
+              return <Product key={i} product={product} />;
+            })}
+          </Grid>
+        )}
       </Box>
     </>
   );
