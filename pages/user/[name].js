@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Center } from "@chakra-ui/react";
 import Layout from "@/components/layouts/format";
@@ -15,8 +15,13 @@ export async function getServerSideProps(context) {
 
   const { name } = context.query;
 
-  const res = await onRequestProductListSubmit(cookies);
-  const profile = await onFetchingUserProfile(cookies);
+  let res = await onRequestProductListSubmit(cookies);
+  let profile = await onFetchingUserProfile(cookies);
+
+  if (res.message || profile.message) {
+    res = 401;
+    profile = 401;
+  }
 
   return { props: { name, res, profile } };
 }
@@ -35,11 +40,16 @@ export default function UserProfile({ name, res, profile }) {
     }
   }
 
-  if (res.message || profile.message) {
-    signout();
-    router.push("/");
-    return <></>;
+  if ((res == 401 || profile == 401) && !afterFetching) {
+    setAfterFetching(true);
   }
+
+  useEffect(() => {
+    if (res == 401 || profile == 401) {
+      signout("/");
+      router.push("/");
+    }
+  }, [afterFetching]);
 
   return (
     <>

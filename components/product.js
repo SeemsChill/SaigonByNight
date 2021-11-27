@@ -16,7 +16,7 @@ export default function Product({ product }) {
         pl="1rem"
         transition="all 300ms ease-in-out"
       >
-        <Heading color={colorMode == "light" ? "#dcc9b0" : "#18181d"}>
+        <Heading size="md" color={colorMode == "light" ? "#dcc9b0" : "#18181d"}>
           {product.name}
         </Heading>
         <Flex alignItems="center" justifyContent="right" mt="1rem">

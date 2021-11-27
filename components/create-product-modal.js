@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { IoIosAddCircle } from "react-icons/io";
+import CreateProductForm from "./create-product-form";
 
 export default function CreateProductModal() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -36,11 +37,27 @@ export default function CreateProductModal() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent color="#202023" w={{ base: "20rem", md: "30rem" }}>
-          <ModalHeader bg="#dcc5a7" borderTopRadius="md" fontSize="3xl">
-            Upload your product.
+          <ModalHeader
+            bg={colorMode == "dark" ? "#202023" : "white"}
+            border="4px solid #f0e7db"
+            borderTopRadius="md"
+            color={colorMode == "dark" ? "#f0e7db" : "#202023"}
+            fontSize={{ base: "xl", md: "3xl" }}
+          >
+            {"Upload your product."}
           </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody bg="#f0e7db" borderBottomRadius="lg"></ModalBody>
+          <ModalCloseButton
+            color={colorMode == "light" ? "#202023" : "#f0e7db"}
+            top={{ base: "0.9em", md: "1.5em" }}
+            size="lg"
+          />
+          <ModalBody
+            bg={colorMode == "dark" ? "#202023" : "white"}
+            border="4px solid #f0e7db"
+            borderBottomRadius="lg"
+          >
+            <CreateProductForm />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>
