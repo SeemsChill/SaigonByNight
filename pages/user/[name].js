@@ -73,9 +73,8 @@ export default function UserProfile({
             <Center
               display="flex"
               flexDirection={{ base: "column", md: "row" }}
-              h="70vh"
               maxW="container.lg"
-              mt={{ base: "16rem", md: "2rem" }}
+              mt={{ base: "2rem", md: "2rem" }}
             >
               <ProfileDashboard
                 username={profile.username}
@@ -91,20 +90,27 @@ export default function UserProfile({
               <ProductDashboard products={res} />
             </Center>
             <Flex
-              mt={{ base: "20em", md: "0rem" }}
+              mt={{ base: "2em", md: "4rem" }}
               flexDirection={{ base: "column", md: "row" }}
+              borderTop="3px solid black"
+              pt={5}
             >
               <Box>
                 <Heading>Bill:</Heading>
                 <>
                   {client_bill.message ? (
-                    <Text>{"Currently empty."}</Text>
+                    <Text mr={{ base: "0rem", md: "24rem" }}>
+                      {"Currently empty."}
+                    </Text>
                   ) : (
                     <BillClient bills={client_bill} />
                   )}
                 </>
               </Box>
-              <Box ml={{ base: "0rem", md: "3rem" }}>
+              <Box
+                ml={{ base: "0rem", md: "2rem" }}
+                mt={{ base: "2rem", md: "0rem" }}
+              >
                 <Heading>Client:</Heading>
                 <>
                   {owner_bill.message ? (

@@ -6,7 +6,7 @@ export default function BillClientComponent({ bill }) {
 
   return (
     <Box
-      width={{ base: "23rem", md: "25rem" }}
+      width={{ base: "20rem", md: "24rem" }}
       p="1rem"
       border={`4px solid ${colorMode == "light" ? "#202023" : "#f0e7db"}`}
       borderRadius="lg"

@@ -1,19 +1,13 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  Heading,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, Heading, useColorMode } from "@chakra-ui/react";
+import DeliveryModal from "./delivery-modal";
 
 export default function BillOwnerComponent({ bill }) {
   const { colorMode } = useColorMode();
 
   return (
     <Box
-      width={{ base: "23rem", md: "25rem" }}
+      width={{ base: "20rem", md: "25rem" }}
       p="1rem"
       border={`4px solid ${colorMode == "light" ? "#202023" : "#f0e7db"}`}
       borderRadius="lg"
@@ -40,7 +34,7 @@ export default function BillOwnerComponent({ bill }) {
       <Text>{`ward: ${bill.ward}`}</Text>
       <Text>{`phone number: ${bill.phone_number}`}</Text>
       <Flex mt={3} justifyContent="right">
-        <Button colorScheme="red">Deliveried</Button>
+        <DeliveryModal bill={bill} />
       </Flex>
     </Box>
   );

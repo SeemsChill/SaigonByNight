@@ -131,6 +131,9 @@ export default function BuydModal({ product }) {
                             value: /^\d{0,20}$/,
                             message: "Invalid syntax. (e.g: 3)",
                           },
+                          validate: (value) =>
+                            value < product.prod_current_quantity ||
+                            "given quantity is larger than product's current.",
                         })}
                       />
                     </NumberInput>

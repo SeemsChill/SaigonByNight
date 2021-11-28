@@ -20,6 +20,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import SignInMotion from "@/components/motions/signin-isometric";
 import Layout from "@/components/layouts/format";
 import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
@@ -268,6 +269,13 @@ const SignUp = () => {
                 </Link>
                 !
               </Text>
+            </Box>
+            <Box
+              as="div"
+              transform="translate(14rem)"
+              display={{ base: "none", md: "inline-block" }}
+            >
+              <SignInMotion />
             </Box>
           </Container>
         </Layout>
