@@ -20,7 +20,7 @@ const styles = {
 
 const config = {
   initialColorMode: "light",
-  useSystemColorMode: "true",
+  useSystemColorMode: false,
 };
 
 const components = {
