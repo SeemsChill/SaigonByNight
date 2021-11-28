@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Button,
+  CloseButton,
   FormControl,
   FormLabel,
   FormErrorMessage,
@@ -28,6 +32,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export default function BuydModal({ product }) {
+  const [message, setMessage] = useState("");
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuth();
   const {
@@ -76,6 +82,10 @@ export default function BuydModal({ product }) {
         if (buy.status == 401) {
           router.push("/");
         }
+
+        if (buy.status == 202) {
+          setMessage("Purchased successfully.");
+        }
       } else {
         router.push(`/user/${res.data.username}`);
       }
@@ -95,6 +105,13 @@ export default function BuydModal({ product }) {
           </ModalHeader>
           <ModalCloseButton size="lg" top={{ base: "0.9em", md: "1.5em" }} />
           <ModalBody>
+            {message && (
+              <Alert status="success">
+                <AlertIcon />
+                <AlertDescription>{message}</AlertDescription>
+                <CloseButton position="absolute" right="8px" top="8px" />
+              </Alert>
+            )}
             <form onSubmit={handleSubmit(onBuyingProduct)}>
               <FormControl id="quantity" isInvalid={errors.quantity}>
                 <FormLabel fontSize="md" fontWeight="bold">

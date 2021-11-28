@@ -113,3 +113,33 @@ export async function onDeletingProduct(productUid) {
 
   return res;
 }
+
+export async function onGettingAllBills(cookies) {
+  const res = await axios
+    .get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/all/client/bills/`, {
+      headers: {
+        csrftoken: cookies.csrftoken,
+        Authorization: cookies.Authorization,
+      },
+    })
+    .catch((err) => {
+      return err.response;
+    });
+
+  return res.data;
+}
+
+export async function onGettingAllBillsOwner(cookies) {
+  const res = await axios
+    .get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/all/owner/bills/`, {
+      headers: {
+        csrftoken: cookies.csrftoken,
+        Authorization: cookies.Authorization,
+      },
+    })
+    .catch((err) => {
+      return err.response;
+    });
+
+  return res.data;
+}

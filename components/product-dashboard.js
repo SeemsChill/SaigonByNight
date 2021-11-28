@@ -16,7 +16,6 @@ export default function ProductDashboard({ products }) {
         as="div"
         border={`4px solid ${colorMode == "light" ? "#18181d" : "#dcc9b0"}`}
         borderRadius="5px"
-        h="30rem"
         ml={{ base: "0rem", md: "2rem" }}
         mt={{ base: "2rem", md: "0rem" }}
         p="1.5rem"

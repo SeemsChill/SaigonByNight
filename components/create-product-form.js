@@ -34,7 +34,7 @@ import { useAuth } from "@/libs/firebase/auth";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const data = ["1", "2", "3"];
+const data = [{ id: 1, category: "Food" }];
 
 function FileUpload(props) {
   const { children, multiple, register } = props;
@@ -209,8 +209,8 @@ export default function CreateProductForm() {
             })}
           >
             {data.map((input) => (
-              <option key={input} value={input}>
-                {input}
+              <option key={input.id} value={input.category}>
+                {input.category}
               </option>
             ))}
           </Select>
