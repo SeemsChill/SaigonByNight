@@ -74,9 +74,11 @@ function useProvideAuth() {
 
     return createUserWithEmailAndPassword(auth, email, hashedPass)
       .then((userCredential) => {
-        handleUser(userCredential.user);
+        // handleUser(userCredential.user);
+        const currentUser = userCredential;
         updateProfile(auth.currentUser, { displayName: `${username}` }).then(
           async () => {
+            handleUser(currentUser.user);
             const res = await fetcherSignUp(
               auth.currentUser.uid,
               username,

@@ -34,7 +34,7 @@ const Home = ({ res }) => {
     if (res == 401) {
       signout();
       router.push("/signin");
-    }
+    } 
   }, [afterFetching]);
 
   return (
