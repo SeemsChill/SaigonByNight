@@ -140,7 +140,7 @@ const SignUp = () => {
                       required: "This is required",
                       pattern: {
                         value:
-                          /^[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$/,
+                          /^[\w]{1,}[\w_-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$/,
                         message:
                           "Invalid email (allow only alphabet, number, [_, -]).",
                       },

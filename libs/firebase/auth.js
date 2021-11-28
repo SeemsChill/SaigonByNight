@@ -297,6 +297,7 @@ function useProvideAuth() {
 
   const signout = () => {
     const auth = getAuth();
+    router.push("/signin");
     return signOut(auth).then(() => handleUser(false));
   };
 

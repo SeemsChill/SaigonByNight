@@ -39,11 +39,8 @@ export default function ProfileDashboard({
         >
           <Image
             priority
-            alt={`${username} avatar`}
-            src={
-              url ||
-              "https://avatars.githubusercontent.com/u/62212447?s=400&u=d6a986eb0eae79e5137eda59ef7497872fe85c98&v=4"
-            }
+            alt={`${username || "anonymouse"} avatar`}
+            src={url || "https://avatars.githubusercontent.com/u/80795501?v=4"}
             width={200}
             height={200}
           />
@@ -57,11 +54,11 @@ export default function ProfileDashboard({
         }`}
         textAlign="center"
       >
-        {username}
+        {username || "Anonymous"}
       </Heading>
       <Flex mt="1rem" justifyContent="center">
         <ProfileModal
-          username={username}
+          username={username || "Anonymous"}
           email={email}
           real_name={real_name}
           province={province}
