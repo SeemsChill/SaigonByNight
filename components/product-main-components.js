@@ -1,9 +1,11 @@
 import React from "react";
 import { Box, Flex, Heading, Text, useColorMode } from "@chakra-ui/react";
 import BuyModal from "./buy-modal";
+import { useAuth } from "@/libs/firebase/auth";
 
 export default function ProductComponent({ product }) {
   const { colorMode } = useColorMode();
+  const { user } = useAuth();
 
   return (
     <Box
@@ -50,7 +52,17 @@ export default function ProductComponent({ product }) {
         </Box>
       </Flex>
       <Flex justifyContent="right">
-        <BuyModal />
+        {user ? (
+          <>
+            {user.uid == product.owner_uid ? (
+              <></>
+            ) : (
+              <BuyModal product={product} />
+            )}
+          </>
+        ) : (
+          <BuyModal product={product} />
+        )}
       </Flex>
     </Box>
   );

@@ -40,7 +40,10 @@ export default function ProfileDashboard({
           <Image
             priority
             alt={`${username} avatar`}
-            src={url}
+            src={
+              url ||
+              "https://avatars.githubusercontent.com/u/62212447?s=400&u=d6a986eb0eae79e5137eda59ef7497872fe85c98&v=4"
+            }
             width={200}
             height={200}
           />

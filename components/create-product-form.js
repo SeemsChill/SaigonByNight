@@ -31,6 +31,8 @@ import {
 import { useForm } from "react-hook-form";
 import { onCreatingProduct } from "@/libs/engines/productEngine";
 import { useAuth } from "@/libs/firebase/auth";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const data = ["1", "2", "3"];
 
@@ -79,20 +81,35 @@ export default function CreateProductForm() {
     productQuantity,
     productPrice,
   }) {
-    const res = await onCreatingProduct(
-      productName,
-      productCategory,
-      productDescription,
-      productImage[0],
-      productQuantity,
-      productPrice
-    );
+    const profile = await axios
+      .get(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/get/user/profile/`, {
+        headers: {
+          csrftoken: Cookies.get("csrftoken"),
+          Authorization: Cookies.get("Authorization"),
+        },
+      })
+      .catch((err) => {
+        return err.response;
+      });
 
-    if (res.status == 202) {
-      setMessage("We have created product for you.");
+    if (profile.data.province) {
+      const res = await onCreatingProduct(
+        productName,
+        productCategory,
+        productDescription,
+        productImage[0],
+        productQuantity,
+        productPrice
+      );
+
+      if (res.status == 202) {
+        setMessage("We have created product for you.");
+      } else {
+        signout();
+        router.push("/");
+      }
     } else {
-      signout();
-      router.push("/");
+      setMessage("Please update your info.");
     }
   }
 
